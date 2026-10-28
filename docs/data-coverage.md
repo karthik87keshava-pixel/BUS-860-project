@@ -1,0 +1,928 @@
+# Vehicle data coverage
+
+Generated 2026-10-28 by `npm run data:build`. Source: NRCan Fuel Consumption Ratings (https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), downloaded 2026-10-28, cross-checked with US EPA fueleconomy.gov.
+
+**17,569 vehicle versions** from model year 2010 to 2026, 56 makes, 667 model families.
+
+## Source files
+
+| NRCan file | Rows (all years) | Last updated by NRCan |
+|---|---:|---|
+| Battery-electric vehicles 2012-2026 (2026-09-29) | 1,250 | 2026-09-29 |
+| Plug-in hybrid electric vehicles 2012-2026 (2026-09-29) | 409 | 2026-09-29 |
+| 2026 Fuel Consumption Ratings (2026-10-06) | 613 | 2026-10-16 |
+| 2025 Fuel Consumption Ratings (2026-07-24) | 701 | 2026-10-16 |
+| 2015-2024 Fuel Consumption Ratings (2026-09-15) | 10,060 | 2026-09-23 |
+| 1995-2014 Fuel Consumption Ratings | 17,853 | 2025-03-03 |
+
+## Vehicles per model year and fuel type
+
+| Year | Gas | Hybrid | Plug-in hybrid | Electric | Diesel | Total |
+|---|---:|---:|---:|---:|---:|---:|
+| 2026 | 535 | 59 | 57 | 277 | 16 | 944 |
+| 2025 | 630 | 55 | 56 | 279 | 13 | 1033 |
+| 2024 | 717 | 48 | 45 | 224 | 18 | 1052 |
+| 2023 | 843 | 40 | 33 | 159 | 20 | 1095 |
+| 2022 | 897 | 37 | 41 | 82 | 28 | 1085 |
+| 2021 | 893 | 34 | 40 | 49 | 29 | 1045 |
+| 2020 | 900 | 32 | 31 | 40 | 20 | 1023 |
+| 2019 | 960 | 31 | 26 | 35 | 27 | 1079 |
+| 2018 | 978 | 30 | 25 | 21 | 28 | 1082 |
+| 2017 | 964 | 30 | 19 | 23 | 15 | 1051 |
+| 2016 | 994 | 33 | 16 | 27 | 21 | 1091 |
+| 2015 | 997 | 37 | 9 | 14 | 30 | 1087 |
+| 2014 | 917 | 36 | 6 | 9 | 23 | 991 |
+| 2013 | 909 | 44 | 4 | 9 | 19 | 985 |
+| 2012 | 932 | 35 | 1 | 2 | 16 | 986 |
+| 2011 | 932 | 34 | 0 | 0 | 15 | 981 |
+| 2010 | 920 | 25 | 0 | 0 | 14 | 959 |
+
+## Cross-check against US EPA (fueleconomy.gov)
+
+- Same name found in EPA data: 10,010
+- Close match (similar name, same engine): 6,381
+- No EPA match (often Canada-only names or trims): 1,182
+
+EPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hybrid", (b) tell small from large SUVs in 2010–2014, where NRCan doesn't split them, and (c) fill the drive type when the name doesn't show it. All consumption numbers are NRCan's.
+
+### Cars changed using EPA data (35)
+
+- 2026 Chevrolet Corvette E-Ray: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Chevrolet Corvette ZR1X: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Ferrari F80: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Honda Prelude: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota Crown Signia AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota Land Cruiser: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota RAV4 AWD XLE: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota Sequoia 4WD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2026 Toyota Sienna AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Chevrolet Corvette E-Ray: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Toyota Crown Signia AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Toyota Land Cruiser: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Toyota Sequoia 4WD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2025 Toyota Sienna AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2021 Toyota Venza AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2022 Toyota Sienna AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2022 Toyota Venza AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2023 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2023 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2023 Toyota Sequoia 4WD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2023 Toyota Sienna AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2023 Toyota Venza AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Chevrolet Corvette E-Ray: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Toyota Crown AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Toyota Land Cruiser: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Toyota Sequoia 4WD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Toyota Sienna AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2024 Toyota Venza AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2012 Infiniti M35h: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+- 2013 Infiniti M35h: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+
+## Rows we did not use (820)
+
+### E85 rating of a flex-fuel vehicle (its gasoline rating is kept) (815)
+
+<details><summary>Show list</summary>
+
+- 2026 Chevrolet Silverado 4WD FFV
+- 2026 Chevrolet Trailblazer
+- 2026 GMC Sierra 4WD FFV
+- 2025 Chevrolet Silverado 4WD FFV
+- 2025 Chevrolet Trailblazer
+- 2025 GMC Sierra 4WD FFV
+- 2015 Buick LaCrosse
+- 2015 Buick LaCrosse AWD
+- 2015 Chevrolet Equinox FFV
+- 2015 Chevrolet Equinox AWD FFV
+- 2015 Chevrolet Express 2500 Passenger FFV
+- 2015 Chevrolet Express 3500 Passenger FFV
+- 2015 Chevrolet Impala
+- 2015 Chevrolet Silverado
+- 2015 Chevrolet Silverado
+- 2015 Chevrolet Silverado 4WD
+- 2015 Chevrolet Silverado 4WD
+- 2015 Chevrolet Suburban
+- 2015 Chevrolet Suburban 4WD
+- 2015 Chevrolet Tahoe
+- 2015 Chevrolet Tahoe 4WD
+- 2015 Chrysler 200 FFV
+- 2015 Chrysler 200 FFV
+- 2015 Chrysler 200 AWD FFV
+- 2015 Chrysler 300 FFV
+- 2015 Chrysler 300 AWD FFV
+- 2015 Chrysler Town & Country FFV
+- 2015 Dodge Charger FFV
+- 2015 Dodge Charger FFV
+- 2015 Dodge Charger AWD FFV
+- 2015 Dodge Dart FFV
+- 2015 Dodge Durango AWD FFV
+- 2015 Dodge Grand Caravan FFV
+- 2015 Dodge Journey FFV
+- 2015 Ford Explorer FFV
+- 2015 Ford Explorer FFV AWD
+- 2015 Ford F-150 FFV
+- 2015 Ford F-150 FFV
+- 2015 Ford F-150 FFV 4X4
+- 2015 Ford F-150 FFV 4X4
+- 2015 Ford Focus FFV
+- 2015 Ford Focus FFV
+- 2015 Ford Focus FFV
+- 2015 Ford T-150 Wagon FFV
+- 2015 Ford Taurus FFV
+- 2015 Ford Taurus FFV AWD
+- 2015 GMC Savana 2500 Passenger FFV
+- 2015 GMC Savana 3500 Passenger FFV
+- 2015 GMC Sierra
+- 2015 GMC Sierra
+- 2015 GMC Sierra 4WD
+- 2015 GMC Sierra 4WD
+- 2015 GMC Terrain FFV
+- 2015 GMC Yukon
+- 2015 GMC Yukon 4WD
+- 2015 GMC Yukon XL
+- 2015 GMC Yukon XL 4WD
+- 2015 Jaguar XFR
+- 2015 Jaguar XJ Supercharged
+- 2015 Jaguar XJL Supercharged
+- 2015 Jeep Cherokee FFV
+- 2015 Jeep Cherokee 4X4 FFV
+- 2015 Jeep Grand Cherokee 4X4 FFV
+- 2015 Jeep Renegade FFV
+- 2015 Land Rover Range Rover Supercharged
+- 2015 Land Rover Range Rover Supercharged LWB
+- 2015 Land Rover Range Rover Sport Supercharged
+- 2015 Ram 1500 FFV
+- 2015 Ram 1500 4X4 FFV
+- 2015 Ram Cargo Van FFV
+- 2016 Buick LaCrosse FFV
+- 2016 Buick LaCrosse AWD FFV
+- 2016 Chevrolet Equinox FFV
+- 2016 Chevrolet Equinox AWD FFV
+- 2016 Chevrolet Impala FFV
+- 2016 Chevrolet Silverado FFV
+- 2016 Chevrolet Silverado FFV
+- 2016 Chevrolet Silverado 4WD FFV
+- 2016 Chevrolet Silverado 4WD FFV
+- 2016 Chevrolet Suburban FFV
+- 2016 Chevrolet Suburban 4WD FFV
+- 2016 Chevrolet Tahoe FFV
+- 2016 Chevrolet Tahoe 4WD FFV
+- 2016 Chrysler 200 FFV
+- 2016 Chrysler 200 FFV
+- 2016 Chrysler 200 AWD FFV
+- 2016 Chrysler 300 FFV
+- 2016 Chrysler 300 AWD FFV
+- 2016 Chrysler Town & Country FFV
+- 2016 Dodge Charger FFV
+- 2016 Dodge Charger FFV
+- 2016 Dodge Charger AWD FFV
+- 2016 Dodge Dart FFV
+- 2016 Dodge Grand Caravan FFV
+- 2016 Dodge Journey FFV
+- 2016 Ford Explorer FFV
+- 2016 Ford Explorer FFV AWD
+- 2016 Ford F-150 FFV
+- 2016 Ford F-150 FFV
+- 2016 Ford F-150 FFV (Payload Pkg)
+- 2016 Ford F-150 FFV 4X4
+- 2016 Ford F-150 FFV 4X4
+- 2016 Ford F-150 FFV 4X4 (Payload Pkg)
+- 2016 Ford Focus FFV
+- 2016 Ford Focus FFV
+- 2016 Ford Focus FFV
+- 2016 Ford T-150 Wagon FFV
+- 2016 Ford Taurus FFV
+- 2016 Ford Taurus FFV AWD
+- 2016 Ford Transit Connect Van FFV
+- 2016 Ford Transit Connect Wagon FFV
+- 2016 Ford Transit Connect Wagon LWB FFV
+- 2016 GMC Sierra FFV
+- 2016 GMC Sierra FFV
+- 2016 GMC Sierra 4WD FFV
+- 2016 GMC Sierra 4WD FFV
+- 2016 GMC Terrain FFV
+- 2016 GMC Yukon FFV
+- 2016 GMC Yukon 4WD FFV
+- 2016 GMC Yukon XL FFV
+- 2016 GMC Yukon XL 4WD FFV
+- 2016 Jeep Cherokee FFV
+- 2016 Jeep Cherokee 4X4 FFV
+- 2016 Jeep Renegade FFV
+- 2016 Mercedes-Benz CLA 250 4MATIC FFV
+- 2016 Ram 1500 FFV
+- 2016 Ram 1500 4X4 FFV
+- 2017 Chevrolet Equinox FFV
+- 2017 Chevrolet Equinox AWD FFV
+- 2017 Chevrolet Impala FFV
+- 2017 Chevrolet Silverado FFV
+- 2017 Chevrolet Silverado FFV
+- 2017 Chevrolet Silverado 4WD FFV
+- 2017 Chevrolet Silverado 4WD FFV
+- 2017 Chevrolet Suburban FFV
+- 2017 Chevrolet Suburban 4WD FFV
+- 2017 Chevrolet Tahoe FFV
+- 2017 Chevrolet Tahoe 4WD FFV
+- 2017 Chrysler 200 FFV
+- 2017 Chrysler 200 FFV
+- 2017 Chrysler 200 AWD FFV
+- 2017 Chrysler 300 AWD FFV
+- 2017 Dodge Charger AWD FFV
+- 2017 Dodge Grand Caravan FFV
+- 2017 Dodge Journey FFV
+- 2017 Ford Escape FFV
+- 2017 Ford Explorer FFV
+- 2017 Ford Explorer FFV AWD
+- 2017 Ford F-150 FFV
+- 2017 Ford F-150 FFV
+- 2017 Ford F-150 FFV (Payload Pkg)
+- 2017 Ford F-150 FFV 4X4
+- 2017 Ford F-150 FFV 4X4
+- 2017 Ford F-150 FFV 4X4 (LT Tire Pkg)
+- 2017 Ford F-150 FFV 4X4 (Payload Pkg)
+- 2017 Ford Focus FFV
+- 2017 Ford Focus FFV
+- 2017 Ford Focus FFV
+- 2017 Ford T-150 Wagon FFV
+- 2017 Ford Taurus FFV
+- 2017 Ford Taurus FFV AWD
+- 2017 Ford Transit Connect Van FFV
+- 2017 Ford Transit Connect Wagon LWB FFV
+- 2017 GMC Sierra FFV
+- 2017 GMC Sierra FFV
+- 2017 GMC Sierra 4WD FFV
+- 2017 GMC Sierra 4WD FFV
+- 2017 GMC Terrain FFV
+- 2017 GMC Yukon FFV
+- 2017 GMC Yukon 4WD FFV
+- 2017 GMC Yukon XL FFV
+- 2017 GMC Yukon XL 4WD FFV
+- 2017 Jeep Renegade FFV
+- 2017 Mercedes-Benz GLA 250 4MATIC
+- 2017 Ram 1500 FFV
+- 2017 Ram 1500 4X4 FFV
+- 2018 Chevrolet Impala FFV
+- 2018 Chevrolet Silverado FFV
+- 2018 Chevrolet Silverado FFV
+- 2018 Chevrolet Silverado 4WD FFV
+- 2018 Chevrolet Silverado 4WD FFV
+- 2018 Chevrolet Suburban FFV
+- 2018 Chevrolet Suburban 4WD FFV
+- 2018 Chevrolet Tahoe FFV
+- 2018 Chevrolet Tahoe 4WD FFV
+- 2018 Chrysler 300 FFV
+- 2018 Chrysler 300 AWD FFV
+- 2018 Dodge Challenger GT AWD FFV
+- 2018 Dodge Charger FFV
+- 2018 Dodge Charger FFV
+- 2018 Dodge Charger AWD FFV
+- 2018 Dodge Grand Caravan FFV
+- 2018 Dodge Journey FFV
+- 2018 Ford Escape FFV
+- 2018 Ford Explorer FFV
+- 2018 Ford Explorer FFV AWD
+- 2018 Ford F-150 FFV
+- 2018 Ford F-150 FFV (LT Tire Pkg)
+- 2018 Ford F-150 FFV
+- 2018 Ford F-150 FFV (LT Tire Pkg)
+- 2018 Ford F-150 FFV (Payload Pkg)
+- 2018 Ford F-150 FFV 4X4
+- 2018 Ford F-150 FFV 4X4 (LT Tire Pkg)
+- 2018 Ford F-150 FFV 4X4
+- 2018 Ford F-150 FFV 4X4 (LT Tire Pkg)
+- 2018 Ford F-150 FFV 4X4 (Payload Pkg)
+- 2018 Ford Taurus FFV
+- 2018 Ford Taurus FFV AWD
+- 2018 Ford Transit Connect Van FFV
+- 2018 Ford Transit Connect Wagon LWB FFV
+- 2018 GMC Sierra FFV
+- 2018 GMC Sierra FFV
+- 2018 GMC Sierra 4WD FFV
+- 2018 GMC Sierra 4WD FFV
+- 2018 GMC Yukon FFV
+- 2018 GMC Yukon 4WD FFV
+- 2018 GMC Yukon XL FFV
+- 2018 GMC Yukon XL 4WD FFV
+- 2018 Jeep Cherokee FFV
+- 2018 Jeep Cherokee 4X4 Active Drive I FFV
+- 2018 Jeep Renegade FFV
+- 2018 Ram 1500 FFV
+- 2018 Ram 1500 4X4 FFV
+- 2019 Chevrolet Impala
+- 2019 Chevrolet Silverado FFV
+- 2019 Chevrolet Silverado 4WD FFV
+- 2019 Chevrolet Suburban FFV
+- 2019 Chevrolet Suburban 4WD FFV
+- 2019 Chevrolet Tahoe FFV
+- 2019 Chevrolet Tahoe 4WD FFV
+- 2019 Chrysler 300 FFV
+- 2019 Chrysler 300 AWD FFV
+- 2019 Dodge Charger FFV
+- 2019 Dodge Charger FFV
+- 2019 Dodge Charger AWD FFV
+- 2019 Dodge Grand Caravan FFV
+- 2019 Dodge Journey FFV
+- 2019 Ford Escape FFV
+- 2019 Ford Explorer FFV AWD
+- 2019 Ford F-150 FFV
+- 2019 Ford F-150 FFV (LT Tire Pkg)
+- 2019 Ford F-150 FFV
+- 2019 Ford F-150 FFV (LT Tire Pkg)
+- 2019 Ford F-150 FFV (Payload Pkg)
+- 2019 Ford F-150 FFV 4X4
+- 2019 Ford F-150 FFV 4X4 (LT Tire Pkg)
+- 2019 Ford F-150 FFV 4X4
+- 2019 Ford F-150 FFV 4X4 (LT Tire Pkg)
+- 2019 Ford F-150 FFV 4X4 (Payload Pkg)
+- 2019 Ford Taurus FFV
+- 2019 Ford Taurus FFV AWD
+- 2019 Ford Transit Connect Van FFV
+- 2019 Ford Transit Connect Wagon LWB FFV
+- 2019 GMC Sierra FFV
+- 2019 GMC Sierra 4WD FFV
+- 2019 GMC Yukon FFV
+- 2019 GMC Yukon 4WD FFV
+- 2019 GMC Yukon XL FFV
+- 2019 GMC Yukon XL 4WD FFV
+- 2019 Ram 1500 Classic FFV
+- 2019 Ram 1500 Classic 4X4 FFV
+- 2020 Chevrolet Impala
+- 2020 Chevrolet Silverado FFV
+- 2020 Chevrolet Silverado 4WD FFV
+- 2020 Chevrolet Suburban FFV
+- 2020 Chevrolet Suburban 4WD FFV
+- 2020 Chevrolet Tahoe FFV
+- 2020 Chevrolet Tahoe 4WD FFV
+- 2020 Ford F-150 FFV
+- 2020 Ford F-150 FFV
+- 2020 Ford F-150 FFV (LT Tire Pkg)
+- 2020 Ford F-150 FFV (Payload Pkg)
+- 2020 Ford F-150 FFV 4X4
+- 2020 Ford F-150 FFV 4X4
+- 2020 Ford T-150 Wagon FFV
+- 2020 Ford T-150 Wagon FFV 4WD
+- 2020 Ford Transit Connect Van FFV
+- 2020 Ford Transit Connect Wagon LWB FFV
+- 2020 GMC Sierra FFV
+- 2020 GMC Sierra 4WD FFV
+- 2020 GMC Yukon FFV
+- 2020 GMC Yukon 4WD FFV
+- 2020 GMC Yukon XL FFV
+- 2020 GMC Yukon XL 4WD FFV
+- 2021 Chevrolet Silverado FFV
+- 2021 Chevrolet Silverado 4WD FFV
+- 2021 Ford F-150 FFV
+- 2021 Ford F-150 FFV
+- 2021 Ford F-150 FFV (Without Stop-Start)
+- 2021 Ford F-150 FFV 4X4
+- 2021 Ford F-150 FFV 4X4
+- 2021 Ford F-150 FFV 4X4 (Without Stop-Start)
+- 2021 Ford T-150 Wagon FFV
+- 2021 Ford T-150 Wagon FFV 4WD
+- 2021 Ford Transit Connect Van FFV
+- 2021 Ford Transit Connect Wagon LWB FFV
+- 2021 GMC Sierra FFV
+- 2021 GMC Sierra 4WD FFV
+- 2022 Chevrolet Silverado FFV
+- 2022 Chevrolet Silverado 4WD FFV
+- 2022 Chevrolet Silverado 4WD Mud Terrain Tire FFV
+- 2022 Ford F-150 FFV
+- 2022 Ford F-150 FFV
+- 2022 Ford F-150 FFV (Without Stop-Start)
+- 2022 Ford F-150 4X4 FFV
+- 2022 Ford F-150 4X4 FFV
+- 2022 Ford F-150 4X4 FFV (Without Stop-Start)
+- 2022 Ford Transit Connect Van FFV
+- 2022 Ford Transit Connect Wagon LWB FFV
+- 2022 GMC Sierra FFV
+- 2022 GMC Sierra 4WD FFV
+- 2022 GMC Sierra 4WD Mud Terrain Tire FFV
+- 2023 Chevrolet Silverado FFV
+- 2023 Chevrolet Silverado 4WD FFV
+- 2023 Chevrolet Silverado 4WD Mud Terrain Tire FFV
+- 2023 Dodge Challenger SRT Demon 170
+- 2023 Ford F-150 FFV
+- 2023 Ford F-150 FFV (Without Stop-Start)
+- 2023 Ford F-150 FFV
+- 2023 Ford F-150 FFV (Without Stop-Start)
+- 2023 Ford F-150 4X4 FFV
+- 2023 Ford F-150 4X4 FFV
+- 2023 Ford F-150 4X4 FFV (Without Stop-Start)
+- 2023 Ford F-150 Tremor 4X4 FFV
+- 2023 Ford F-150 Tremor 4X4 FFV (Without Stop-Start)
+- 2023 GMC Sierra FFV
+- 2023 GMC Sierra 4WD FFV
+- 2023 GMC Sierra 4WD Mud Terrain Tire FFV
+- 2024 Chevrolet Silverado FFV
+- 2024 Chevrolet Silverado 4WD FFV
+- 2024 Chevrolet Silverado 4WD Mud Terrain Tire FFV
+- 2024 GMC Sierra FFV
+- 2024 GMC Sierra 4WD FFV
+- 2024 GMC Sierra 4WD Mud Terrain Tire FFV
+- 2010 Buick Lucerne
+- 2010 Cadillac Escalade AWD
+- 2010 Chevrolet Avalanche
+- 2010 Chevrolet Express Cargo
+- 2010 Chevrolet Express Cargo AWD
+- 2010 Chevrolet Express Cargo Conv
+- 2010 Chevrolet Express Cargo Conv AWD
+- 2010 Chevrolet Express Passenger
+- 2010 Chevrolet Express Passenger AWD
+- 2010 Chevrolet HHR
+- 2010 Chevrolet HHR
+- 2010 Chevrolet HHR
+- 2010 Chevrolet HHR
+- 2010 Chevrolet HHR Panel
+- 2010 Chevrolet HHR Panel
+- 2010 Chevrolet Impala
+- 2010 Chevrolet Impala
+- 2010 Chevrolet Malibu
+- 2010 Chevrolet Malibu
+- 2010 Chevrolet Malibu
+- 2010 Chevrolet Silverado
+- 2010 Chevrolet Silverado
+- 2010 Chevrolet Silverado XFE
+- 2010 Chevrolet Silverado
+- 2010 Chevrolet Silverado 4WD
+- 2010 Chevrolet Silverado 4WD
+- 2010 Chevrolet Silverado 4WD
+- 2010 Chevrolet Suburban
+- 2010 Chevrolet Tahoe
+- 2010 Chevrolet Tahoe 4WD
+- 2010 Chrysler Sebring Convertible FFV
+- 2010 Chrysler Sebring Sedan FFV
+- 2010 Dodge Dakota FFV
+- 2010 Dodge Dakota FFV 4X4
+- 2010 Dodge Grand Caravan FFV
+- 2010 Dodge Grand Caravan FFV C/V
+- 2010 Dodge Ram 1500 FFV
+- 2010 Dodge Ram 1500 FFV 4X4
+- 2010 Ford Crown Victoria
+- 2010 Ford Escape FFV
+- 2010 Ford Escape 4X4 FFV
+- 2010 Ford Expedition 4X4 FFV
+- 2010 Ford F-150 FFV
+- 2010 Ford F-150 FFV 4X4
+- 2010 Ford Fusion
+- 2010 Ford Fusion AWD
+- 2010 GMC Savana Cargo
+- 2010 GMC Savana Cargo AWD
+- 2010 GMC Savana Cargo Conv
+- 2010 GMC Savana Cargo Conv AWD
+- 2010 GMC Savana Passenger
+- 2010 GMC Savana Passenger AWD
+- 2010 GMC Sierra
+- 2010 GMC Sierra
+- 2010 GMC Sierra XFE
+- 2010 GMC Sierra
+- 2010 GMC Sierra 4WD
+- 2010 GMC Sierra 4WD
+- 2010 GMC Sierra 4WD
+- 2010 GMC Sierra Denali AWD
+- 2010 GMC Yukon
+- 2010 GMC Yukon 4WD
+- 2010 GMC Yukon Denali AWD
+- 2010 GMC Yukon XL
+- 2010 GMC Yukon XL
+- 2010 Hummer H3 4WD
+- 2010 Hummer H3T 4WD
+- 2010 Lincoln Grand Marquis
+- 2010 Lincoln Town Car
+- 2010 Mazda Tribute FFV
+- 2010 Mazda Tribute 4X4 FFV
+- 2011 Buick Lucerne
+- 2011 Buick Regal
+- 2011 Buick Regal
+- 2011 Cadillac Escalade AWD
+- 2011 Cadillac Escalade ESV AWD
+- 2011 Chevrolet Avalanche
+- 2011 Chevrolet Avalanche 4WD
+- 2011 Chevrolet Equinox
+- 2011 Chevrolet Equinox AWD
+- 2011 Chevrolet Express Cargo
+- 2011 Chevrolet Express Cargo AWD
+- 2011 Chevrolet Express Cargo Conv
+- 2011 Chevrolet Express Cargo Conv AWD
+- 2011 Chevrolet Express Passenger
+- 2011 Chevrolet Express Passenger AWD
+- 2011 Chevrolet Express 2500 Passenger
+- 2011 Chevrolet Express 2500 Passenger
+- 2011 Chevrolet Express 3500 Passenger
+- 2011 Chevrolet HHR
+- 2011 Chevrolet HHR
+- 2011 Chevrolet HHR
+- 2011 Chevrolet HHR
+- 2011 Chevrolet HHR Panel
+- 2011 Chevrolet HHR Panel
+- 2011 Chevrolet HHR Panel
+- 2011 Chevrolet HHR Panel
+- 2011 Chevrolet Impala
+- 2011 Chevrolet Impala
+- 2011 Chevrolet Malibu
+- 2011 Chevrolet Silverado
+- 2011 Chevrolet Silverado
+- 2011 Chevrolet Silverado XFE
+- 2011 Chevrolet Silverado
+- 2011 Chevrolet Silverado 4WD
+- 2011 Chevrolet Silverado 4WD
+- 2011 Chevrolet Silverado 4WD
+- 2011 Chevrolet Suburban
+- 2011 Chevrolet Suburban 4WD
+- 2011 Chevrolet Tahoe
+- 2011 Chevrolet Tahoe 4WD
+- 2011 Chrysler 200 Sedan FFV
+- 2011 Chrysler 200 Convertible FFV
+- 2011 Chrysler 300 FFV
+- 2011 Chrysler Town & Country FFV
+- 2011 Dodge Avenger FFV
+- 2011 Dodge Charger FFV
+- 2011 Dodge Dakota FFV
+- 2011 Dodge Dakota FFV 4X4
+- 2011 Dodge Durango AWD FFV
+- 2011 Dodge Grand Caravan FFV
+- 2011 Dodge Grand Caravan FFV C/V
+- 2011 Dodge Journey FFV
+- 2011 Dodge Ram 1500 FFV
+- 2011 Dodge Ram 1500 FFV 4X4
+- 2011 Ford E150 Van FFV
+- 2011 Ford E150 Van FFV
+- 2011 Ford E150 Wagon FFV
+- 2011 Ford E150 Wagon FFV
+- 2011 Ford E350 Wagon FFV
+- 2011 Ford Escape FFV
+- 2011 Ford Escape 4X4 FFV
+- 2011 Ford Expedition 4X4 FFV
+- 2011 Ford F-150 FFV
+- 2011 Ford F-150 FFV
+- 2011 Ford F-150 FFV
+- 2011 Ford F-150 FFV
+- 2011 Ford F-150 FFV 4X4
+- 2011 Ford F-150 FFV 4X4
+- 2011 Ford F-150 FFV 4X4
+- 2011 Ford F-150 FFV 4X4
+- 2011 Ford Fusion FFV
+- 2011 Ford Fusion FFV AWD
+- 2011 GMC Savana Cargo
+- 2011 GMC Savana Cargo AWD
+- 2011 GMC Savana Cargo Conv
+- 2011 GMC Savana Cargo Conv AWD
+- 2011 GMC Savana Passenger
+- 2011 GMC Savana Passenger AWD
+- 2011 GMC Savana 2500 Passenger
+- 2011 GMC Savana 2500 Passenger
+- 2011 GMC Savana 3500 Passenger
+- 2011 GMC Sierra
+- 2011 GMC Sierra
+- 2011 GMC Sierra XFE
+- 2011 GMC Sierra
+- 2011 GMC Sierra 4WD
+- 2011 GMC Sierra 4WD
+- 2011 GMC Sierra 4WD
+- 2011 GMC Sierra Denali AWD
+- 2011 GMC Terrain
+- 2011 GMC Terrain AWD
+- 2011 GMC Yukon
+- 2011 GMC Yukon 4WD
+- 2011 GMC Yukon Denali AWD
+- 2011 GMC Yukon XL
+- 2011 GMC Yukon XL 4WD
+- 2011 GMC Yukon XL Denali AWD
+- 2011 Jeep Grand Cherokee 4X4 FFV
+- 2011 Lincoln Grand Marquis
+- 2011 Lincoln Navigator 4X4 FFV
+- 2011 Lincoln Town Car
+- 2011 Mazda Tribute FFV
+- 2011 Mazda Tribute 4X4 FFV
+- 2011 Volkswagen Routan FFV
+- 2012 Buick LaCrosse
+- 2012 Buick LaCrosse AWD
+- 2012 Buick Regal
+- 2012 Buick Regal
+- 2012 Buick Regal
+- 2012 Buick Verano
+- 2012 Cadillac Escalade AWD
+- 2012 Cadillac Escalade ESV AWD
+- 2012 Cadillac SRX
+- 2012 Cadillac SRX AWD
+- 2012 Chevrolet Avalanche
+- 2012 Chevrolet Avalanche 4WD
+- 2012 Chevrolet Equinox
+- 2012 Chevrolet Equinox
+- 2012 Chevrolet Equinox AWD
+- 2012 Chevrolet Equinox AWD
+- 2012 Chevrolet Express 1500 Cargo
+- 2012 Chevrolet Express 1500 Cargo AWD
+- 2012 Chevrolet Express 1500 Cargo Conv
+- 2012 Chevrolet Express 1500 Cargo Conv AWD
+- 2012 Chevrolet Express 1500 Passenger
+- 2012 Chevrolet Express 1500 Passenger AWD
+- 2012 Chevrolet Express 2500 Passenger
+- 2012 Chevrolet Express 2500 Passenger
+- 2012 Chevrolet Express 3500 Passenger
+- 2012 Chevrolet Express 3500 Passenger
+- 2012 Chevrolet Impala
+- 2012 Chevrolet Malibu
+- 2012 Chevrolet Silverado
+- 2012 Chevrolet Silverado
+- 2012 Chevrolet Silverado XFE
+- 2012 Chevrolet Silverado
+- 2012 Chevrolet Silverado 4WD
+- 2012 Chevrolet Silverado 4WD
+- 2012 Chevrolet Silverado 4WD
+- 2012 Chevrolet Suburban
+- 2012 Chevrolet Suburban 4WD
+- 2012 Chevrolet Tahoe
+- 2012 Chevrolet Tahoe 4WD
+- 2012 Chrysler 200 FFV
+- 2012 Chrysler 200 Convertible FFV
+- 2012 Chrysler 300 FFV
+- 2012 Chrysler 300 FFV
+- 2012 Chrysler 300 AWD FFV
+- 2012 Chrysler Town & Country FFV
+- 2012 Dodge Avenger FFV
+- 2012 Dodge Charger FFV
+- 2012 Dodge Charger FFV
+- 2012 Dodge Charger AWD FFV
+- 2012 Dodge Durango AWD FFV
+- 2012 Dodge Grand Caravan FFV
+- 2012 Dodge Journey FFV
+- 2012 Ford E150 Van FFV
+- 2012 Ford E150 Van FFV
+- 2012 Ford E150 Wagon FFV
+- 2012 Ford E150 Wagon FFV
+- 2012 Ford E350 Wagon FFV
+- 2012 Ford Escape FFV
+- 2012 Ford Escape 4X4 FFV
+- 2012 Ford Expedition 4X4 FFV
+- 2012 Ford F-150 FFV
+- 2012 Ford F-150 FFV
+- 2012 Ford F-150 FFV
+- 2012 Ford F-150 FFV
+- 2012 Ford F-150 FFV 4X4
+- 2012 Ford F-150 FFV 4X4
+- 2012 Ford F-150 FFV 4X4
+- 2012 Ford F-150 FFV 4X4
+- 2012 Ford Fusion FFV
+- 2012 Ford Fusion FFV AWD
+- 2012 GMC Savana 1500 Cargo
+- 2012 GMC Savana 1500 Cargo AWD
+- 2012 GMC Savana 1500 Cargo Conv
+- 2012 GMC Savana 1500 Cargo Conv AWD
+- 2012 GMC Savana 1500 Passenger
+- 2012 GMC Savana 1500 Passenger AWD
+- 2012 GMC Savana 2500 Passenger
+- 2012 GMC Savana 2500 Passenger
+- 2012 GMC Savana 3500 Passenger
+- 2012 GMC Savana 3500 Passenger
+- 2012 GMC Sierra
+- 2012 GMC Sierra
+- 2012 GMC Sierra XFE
+- 2012 GMC Sierra
+- 2012 GMC Sierra 4WD
+- 2012 GMC Sierra 4WD
+- 2012 GMC Sierra 4WD
+- 2012 GMC Sierra Denali AWD
+- 2012 GMC Terrain
+- 2012 GMC Terrain
+- 2012 GMC Terrain AWD
+- 2012 GMC Terrain AWD
+- 2012 GMC Yukon
+- 2012 GMC Yukon 4WD
+- 2012 GMC Yukon Denali AWD
+- 2012 GMC Yukon XL
+- 2012 GMC Yukon XL 4WD
+- 2012 GMC Yukon XL Denali AWD
+- 2012 Jeep Grand Cherokee 4X4 FFV
+- 2012 Lincoln Navigator 4X4 FFV
+- 2012 Mercedes-Benz C 300 4MATIC FFV
+- 2012 Ram 1500 FFV
+- 2012 Ram 1500 FFV 4X4
+- 2012 Ram Cargo Van FFV
+- 2013 Buick LaCrosse
+- 2013 Buick LaCrosse AWD
+- 2013 Buick Regal
+- 2013 Buick Regal
+- 2013 Buick Verano
+- 2013 Cadillac ATS
+- 2013 Cadillac ATS AWD
+- 2013 Cadillac Escalade AWD
+- 2013 Cadillac Escalade ESV AWD
+- 2013 Cadillac SRX
+- 2013 Cadillac SRX AWD
+- 2013 Chevrolet Avalanche
+- 2013 Chevrolet Avalanche 4WD
+- 2013 Chevrolet Equinox
+- 2013 Chevrolet Equinox AWD
+- 2013 Chevrolet Express 1500 Cargo
+- 2013 Chevrolet Express 1500 Cargo AWD
+- 2013 Chevrolet Express 1500 Cargo Conv
+- 2013 Chevrolet Express 1500 Cargo Conv AWD
+- 2013 Chevrolet Express 1500 Passenger
+- 2013 Chevrolet Express 1500 Passenger AWD
+- 2013 Chevrolet Express 2500 Passenger
+- 2013 Chevrolet Express 2500 Passenger
+- 2013 Chevrolet Express 3500 Passenger
+- 2013 Chevrolet Express 3500 Passenger
+- 2013 Chevrolet Impala
+- 2013 Chevrolet Silverado
+- 2013 Chevrolet Silverado
+- 2013 Chevrolet Silverado XFE
+- 2013 Chevrolet Silverado
+- 2013 Chevrolet Silverado 4WD
+- 2013 Chevrolet Silverado 4WD
+- 2013 Chevrolet Silverado 4WD
+- 2013 Chevrolet Suburban
+- 2013 Chevrolet Suburban 4WD
+- 2013 Chevrolet Tahoe
+- 2013 Chevrolet Tahoe 4WD
+- 2013 Chrysler 200 Sedan FFV
+- 2013 Chrysler 200 Convertible FFV
+- 2013 Chrysler 300 FFV
+- 2013 Chrysler 300 AWD FFV
+- 2013 Chrysler Town & Country FFV
+- 2013 Dodge Avenger FFV
+- 2013 Dodge Charger FFV
+- 2013 Dodge Charger FFV
+- 2013 Dodge Charger AWD FFV
+- 2013 Dodge Dart FFV
+- 2013 Dodge Durango AWD FFV
+- 2013 Dodge Grand Caravan FFV
+- 2013 Dodge Journey FFV
+- 2013 Ford E150 Van FFV
+- 2013 Ford E150 Van FFV
+- 2013 Ford E150 Wagon FFV
+- 2013 Ford E150 Wagon FFV
+- 2013 Ford E350 Wagon FFV
+- 2013 Ford Expedition 4X4 FFV
+- 2013 Ford Explorer FFV
+- 2013 Ford Explorer FFV AWD
+- 2013 Ford F-150 FFV
+- 2013 Ford F-150 FFV
+- 2013 Ford F-150 FFV
+- 2013 Ford F-150 FFV
+- 2013 Ford F-150 FFV 4X4
+- 2013 Ford F-150 FFV 4X4
+- 2013 Ford F-150 FFV 4X4
+- 2013 Ford F-150 FFV 4X4
+- 2013 Ford Focus FFV
+- 2013 Ford Focus SFE FFV
+- 2013 Ford Focus FFV
+- 2013 Ford Focus FFV
+- 2013 Ford Taurus FFV
+- 2013 Ford Taurus FFV AWD
+- 2013 GMC Savana 1500 Cargo
+- 2013 GMC Savana 1500 Cargo AWD
+- 2013 GMC Savana 1500 Cargo Conv
+- 2013 GMC Savana 1500 Cargo Conv AWD
+- 2013 GMC Savana 1500 Passenger
+- 2013 GMC Savana 1500 Passenger AWD
+- 2013 GMC Savana 2500 Passenger
+- 2013 GMC Savana 2500 Passenger
+- 2013 GMC Savana 3500 Passenger
+- 2013 GMC Savana 3500 Passenger
+- 2013 GMC Sierra
+- 2013 GMC Sierra
+- 2013 GMC Sierra XFE
+- 2013 GMC Sierra
+- 2013 GMC Sierra 4WD
+- 2013 GMC Sierra 4WD
+- 2013 GMC Sierra 4WD
+- 2013 GMC Sierra Denali AWD
+- 2013 GMC Terrain
+- 2013 GMC Terrain AWD
+- 2013 GMC Yukon
+- 2013 GMC Yukon 4WD
+- 2013 GMC Yukon Denali AWD
+- 2013 GMC Yukon XL
+- 2013 GMC Yukon XL 4WD
+- 2013 GMC Yukon Denali XL AWD
+- 2013 Jeep Grand Cherokee 4X4 FFV
+- 2013 Lincoln Navigator 4X4 FFV
+- 2013 Mercedes-Benz C 300 4MATIC FFV
+- 2013 Mercedes-Benz E 350 Cabriolet FFV
+- 2013 Mercedes-Benz E 350 Coupe FFV
+- 2013 Mercedes-Benz E 350 4MATIC Coupe
+- 2013 Mercedes-Benz ML 350 4MATIC
+- 2013 Ram 1500 FFV
+- 2013 Ram 1500 FFV
+- 2013 Ram 1500 FFV 4X4
+- 2013 Ram 1500 FFV 4X4
+- 2013 Ram Cargo Van FFV
+- 2014 Buick LaCrosse
+- 2014 Buick LaCrosse AWD
+- 2014 Cadillac Escalade AWD
+- 2014 Cadillac Escalade ESV AWD
+- 2014 Chevrolet Equinox
+- 2014 Chevrolet Equinox AWD
+- 2014 Chevrolet Express 1500 Cargo
+- 2014 Chevrolet Express 1500 Cargo AWD
+- 2014 Chevrolet Express 1500 Cargo Conv
+- 2014 Chevrolet Express 1500 Cargo Conv AWD
+- 2014 Chevrolet Express 1500 Passenger
+- 2014 Chevrolet Express 1500 Passenger AWD
+- 2014 Chevrolet Express 2500 Passenger
+- 2014 Chevrolet Express 3500 Passenger
+- 2014 Chevrolet Impala
+- 2014 Chevrolet Silverado
+- 2014 Chevrolet Silverado
+- 2014 Chevrolet Silverado 4WD
+- 2014 Chevrolet Silverado 4WD
+- 2014 Chevrolet Suburban
+- 2014 Chevrolet Suburban 4WD
+- 2014 Chevrolet Tahoe
+- 2014 Chevrolet Tahoe 4WD
+- 2014 Chrysler 200 Sedan FFV
+- 2014 Chrysler 200 Convertible FFV
+- 2014 Chrysler 300 FFV
+- 2014 Chrysler 300 AWD FFV
+- 2014 Chrysler Town & Country FFV
+- 2014 Dodge Avenger FFV
+- 2014 Dodge Charger FFV
+- 2014 Dodge Charger FFV
+- 2014 Dodge Charger AWD FFV
+- 2014 Dodge Dart FFV
+- 2014 Dodge Durango AWD FFV
+- 2014 Dodge Grand Caravan FFV
+- 2014 Dodge Journey FFV
+- 2014 Ford E150 Van FFV
+- 2014 Ford E150 Van FFV
+- 2014 Ford E150 Wagon FFV
+- 2014 Ford E350 Wagon FFV
+- 2014 Ford Expedition 4X4 FFV
+- 2014 Ford Explorer FFV
+- 2014 Ford Explorer FFV AWD
+- 2014 Ford F-150 FFV
+- 2014 Ford F-150 FFV
+- 2014 Ford F-150 FFV
+- 2014 Ford F-150 FFV
+- 2014 Ford F-150 FFV 4X4
+- 2014 Ford F-150 FFV 4X4
+- 2014 Ford F-150 FFV 4X4
+- 2014 Ford F-150 FFV 4X4
+- 2014 Ford Focus FFV
+- 2014 Ford Focus SFE FFV
+- 2014 Ford Focus FFV
+- 2014 Ford Focus FFV
+- 2014 Ford Taurus FFV
+- 2014 Ford Taurus FFV AWD
+- 2014 GMC Savana 1500 Cargo
+- 2014 GMC Savana 1500 Cargo AWD
+- 2014 GMC Savana 1500 Cargo Conv
+- 2014 GMC Savana 1500 Cargo Conv AWD
+- 2014 GMC Savana 1500 Passenger
+- 2014 GMC Savana 1500 Passenger AWD
+- 2014 GMC Savana 2500 Passenger
+- 2014 GMC Savana 3500 Passenger
+- 2014 GMC Sierra
+- 2014 GMC Sierra
+- 2014 GMC Sierra 4WD
+- 2014 GMC Sierra 4WD
+- 2014 GMC Terrain
+- 2014 GMC Terrain AWD
+- 2014 GMC Yukon
+- 2014 GMC Yukon 4WD
+- 2014 GMC Yukon Denali AWD
+- 2014 GMC Yukon XL
+- 2014 GMC Yukon XL 4WD
+- 2014 GMC Yukon Denali XL AWD
+- 2014 Jaguar XFR
+- 2014 Jaguar XJ Supercharged
+- 2014 Jaguar XJL Supercharged
+- 2014 Jeep Grand Cherokee 4X4 FFV
+- 2014 Land Rover Range Rover V6 3.0 SC FFV
+- 2014 Land Rover Range Rover V8 5.0 SC FFV
+- 2014 Land Rover Range Rover LWB V8 5.0 SC FFV
+- 2014 Land Rover Range Rover Sport V6 3.0 SC FFV
+- 2014 Land Rover Range Rover Sport V8 5.0 SC FFV
+- 2014 Lincoln Navigator 4X4 FFV
+- 2014 Mercedes-Benz C 300 4MATIC FFV
+- 2014 Mercedes-Benz ML 350 4MATIC FFV
+- 2014 Ram 1500 FFV
+- 2014 Ram 1500 4X4 FFV
+- 2014 Ram Cargo Van FFV
+
+</details>
+
+### Natural gas vehicle (not sold to the public in Alberta) (1)
+
+<details><summary>Show list</summary>
+
+- 2016 Chevrolet Impala Dual Fuel
+
+</details>
+
+### Exact duplicate of another row (4)
+
+<details><summary>Show list</summary>
+
+- 2012 Subaru Impreza AWD
+- 2012 Subaru Impreza AWD
+- 2012 Subaru WRX AWD
+- 2012 Subaru WRX STI AWD
+
+</details>
+
