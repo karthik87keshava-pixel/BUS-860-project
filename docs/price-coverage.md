@@ -2,7 +2,7 @@
 
 Generated 2026-10-28 by `npm run data:prices`.
 
-**Every one of the 17,569 vehicle versions has a pre-filled price.** 32 are the exact published base price for that model year (verified, with source). The other 17,537 are estimates built from a family base price, the price index and the version rules described on the "How we calculate" page.
+**Every one of the 17,569 vehicle versions has a pre-filled price.** 47 are the exact published base price for that model year (verified, with source). The other 17,522 are estimates built from a family base price, the price index and the version rules described on the "How we calculate" page.
 
 **Price index not yet loaded** (www150.statcan.gc.ca was blocked when this ran). Older model years use the family base price with no inflation adjustment until `npm run data:refresh` runs with access.
 
@@ -11,7 +11,7 @@ Generated 2026-10-28 by `npm run data:prices`.
 
 | Model year | Verified | Estimate |
 |---|---:|---:|
-| 2026 | 32 | 912 |
+| 2026 | 47 | 897 |
 | 2025 | 0 | 1033 |
 | 2024 | 0 | 1052 |
 | 2023 | 0 | 1095 |

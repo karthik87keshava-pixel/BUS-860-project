@@ -96,6 +96,20 @@ function pickAnchor(v) {
   return null;
 }
 
+// Newest model year of each family (the site treats that year as "new" and older years as used)
+const latestYear = new Map();
+for (const v of vehicles) latestYear.set(`${v.make}|${v.family}`, Math.max(latestYear.get(`${v.make}|${v.family}`) ?? 0, v.year));
+for (const v of vehicles) v.latestFamilyYear = latestYear.get(`${v.make}|${v.family}`);
+
+// Main fuel type of each family (an anchor with no fuel given is assumed to be priced for this fuel)
+const fuelCount = new Map();
+for (const v of vehicles) {
+  const k = `${v.make}|${v.family}`;
+  if (!fuelCount.has(k)) fuelCount.set(k, {});
+  fuelCount.get(k)[v.fuelType] = (fuelCount.get(k)[v.fuelType] ?? 0) + 1;
+}
+const mainFuel = (v) => Object.entries(fuelCount.get(`${v.make}|${v.family}`)).sort((a, b) => b[1] - a[1])[0][0];
+
 const stats = { verified: 0, estimate: 0, missing: 0 };
 const statusByYear = {};
 for (const v of vehicles) {
@@ -118,21 +132,24 @@ for (const v of vehicles) {
   if (!specific) {
     const siblings = famYear.get(`${v.make}|${v.family}|${v.year}`) || [v];
     if (!fuelMatched) {
-      const fromFuel = anchor.fuel || "gas";
+      const fromFuel = anchor.fuel || mainFuel(v);
       const p = (FUEL_PREMIUM[v.fuelType] ?? 0) - (FUEL_PREMIUM[fromFuel] ?? 0);
       if (p) {
         mult *= 1 + p;
         notes.push(`${v.fuelType} version +${Math.round(p * 100)}%`);
       }
     }
+    let awdApplied = false;
     if (v.drive === "AWD/4WD" && siblings.some((s) => s.drive === "2WD")) {
       mult *= 1 + AWD_PREMIUM;
+      awdApplied = true;
       notes.push(`AWD/4WD +${Math.round(AWD_PREMIUM * 100)}%`);
     }
     const same = siblings.filter((s) => s.fuelType === v.fuelType);
     if (v.fuelType === "ev") {
+      // On EVs the second motor IS the AWD, so count it only once
       const minKw = Math.min(...same.map((s) => s.motorKw || Infinity));
-      if (v.motorKw && minKw < Infinity && v.motorKw > minKw * 1.3) {
+      if (!awdApplied && v.motorKw && minKw < Infinity && v.motorKw > minKw * 1.3) {
         mult *= 1.15;
         notes.push("more powerful motor +15%");
       }
@@ -160,7 +177,7 @@ for (const v of vehicles) {
 
   v.msrp = round(price * mult);
   // "Verified" only when the number shown is exactly the published base price for this model year
-  const isExact = anchor.status === "verified" && anchor.year === v.year && mult === 1 && fuelMatched;
+  const isExact = anchor.status === "verified" && anchor.year === v.year && mult === 1;
   v.msrpStatus = isExact ? "verified" : "estimate";
   v.msrpBasis = notes.join("; ");
   if (anchor.status === "verified") {
