@@ -1,103 +1,76 @@
-import Image from "next/image";
+import Link from "next/link";
+import { DATA_INFO } from "@/lib/vehicles-server";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div>
+      <section className="mx-auto max-w-7xl px-4 pb-16 pt-16 sm:px-6 sm:pt-24">
+        <p className="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Alberta car cost calculator</p>
+        <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">What will that car really cost you?</h1>
+        <p className="mt-6 max-w-2xl text-lg text-muted">
+          Compare up to four cars side by side — loan, lease or cash — over the years you plan to keep them. We add up the price, GST,
+          payments, fuel or electricity, insurance, maintenance, tires and registration, then take off what the car is worth at the end.
+        </p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link href="/compare" className="rounded-full bg-fg px-7 py-3.5 text-base font-medium text-white hover:bg-accent">
+            Start a comparison
+          </Link>
+          <Link href="/sign-in?next=/my-comparisons" className="rounded-full border border-fg px-7 py-3.5 text-base font-medium hover:bg-soft">
+            Sign in to see saved comparisons
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <p className="mt-4 text-sm text-muted">No account needed to compare. Sign in only if you want to save.</p>
+      </section>
+
+      <section className="border-y border-line bg-soft">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
+          <Feature title={`${DATA_INFO.count.toLocaleString("en-CA")} vehicle versions`}>
+            Every gas, hybrid, plug-in hybrid, electric and diesel model rated by Natural Resources Canada from {DATA_INFO.firstYear} to{" "}
+            {DATA_INFO.lastYear}, each with a pre-filled price.
+          </Feature>
+          <Feature title="Built for Alberta">
+            5% GST and no PST, Alberta fuel and electricity prices, registration and the $200 EV tax, Alberta insurance averages, and the
+            current federal EV rebate.
+          </Feature>
+          <Feature title="Every number is yours to change">
+            Each default shows where it came from. Change any figure, and reset it with one click. Share the result with a link.
+          </Feature>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+        <h2 className="text-2xl font-semibold tracking-tight">How it works</h2>
+        <ol className="mt-6 grid gap-6 md:grid-cols-3">
+          <Step n={1} title="Pick up to four cars">
+            Search (&ldquo;2024 civic hybrid&rdquo;) or choose year, make, model and version. Then pick loan, lease or cash.
+          </Step>
+          <Step n={2} title="Tell us how you drive">
+            Kilometres, city or highway, how many winter months, whether you can charge at home, and how long you&rsquo;ll keep the car.
+          </Step>
+          <Step n={3} title="Compare like for like">
+            Totals, cost per month and per km, running costs only, and a year-by-year chart. The cheapest column gets a badge.
+          </Step>
+        </ol>
+      </section>
     </div>
+  );
+}
+
+function Feature({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h2 className="text-lg font-semibold">{title}</h2>
+      <p className="mt-2 text-muted">{children}</p>
+    </div>
+  );
+}
+
+function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+  return (
+    <li className="border-t border-fg pt-4">
+      <span className="text-sm text-muted">Step {n}</span>
+      <h3 className="mt-1 text-lg font-semibold">{title}</h3>
+      <p className="mt-2 text-muted">{children}</p>
+    </li>
   );
 }

@@ -311,7 +311,9 @@ for (const file of manifest.files) {
       v.fuelType === "ev"
         ? `Electric${v.motorKw ? `, ${v.motorKw} kW` : ""}`
         : `${v.engineL ?? "?"} L ${v.cylinders ?? "?"}-cyl${v.fuelType === "phev" ? " plug-in hybrid" : v.fuelType === "hybrid" ? " hybrid" : v.fuelType === "diesel" ? " diesel" : ""}`;
-    v.version = `${model} · ${engine} · ${transmissionLabel(v.transmission)}`;
+    // The combined rating tells apart versions NRCan lists with the same name, engine and transmission
+    const rating = v.fuelType === "ev" ? `${v.combKwh} kWh/100 km` : v.fuelType === "phev" ? `${v.electricRangeKm} km electric` : `${v.combL} L/100 km`;
+    v.version = `${model} · ${engine} · ${transmissionLabel(v.transmission)} · ${rating}`;
 
     const key = [year, make, model, v.engineL, v.cylinders, v.transmission, v.fuelType, v.fuelGrade, v.cityL ?? v.cityKwh, v.hwyL ?? v.hwyKwh].join("|");
     if (seen.has(key)) { reject("Exact duplicate of another row"); continue; }

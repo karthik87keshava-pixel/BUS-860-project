@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
+/* DriveTally palette: white, black, greys, one accent (deep teal, 5.5:1 contrast on white). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #5f6368;
+  --line: #e4e4e7;
+  --soft: #f5f5f5;
+  --accent: #0f766e;
+  --accent-soft: #e6f2f1;
+  --warn: #9a3412;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-soft: var(--soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1; /* numbers line up in columns */
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
+
+/* Hide scrollbars on the sideways-scrolling compare rows (they scroll together with the header) */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    font-size: 11px;
+  }
+  .print-full {
+    overflow: visible !important;
+  }
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
 }
