@@ -61,6 +61,44 @@ async function fetchEpa() {
   console.log("EPA: vehicles.csv downloaded");
 }
 
+// Statistics Canada CPI, "Purchase of new passenger vehicles", Canada, annual average (table 18-10-0005-01).
+// Used to move a model's base price to other model years.
+async function fetchCpi() {
+  const PID = "18100005";
+  const meta = await getJson(`https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/${PID}/en`);
+  const zip = path.join(RAW, `statcan-${PID}.zip`);
+  const res = await fetch(meta.object);
+  if (!res.ok) throw new Error(`StatCan download failed: ${res.status}`);
+  fs.writeFileSync(zip, Buffer.from(await res.arrayBuffer()));
+  execFileSync("unzip", ["-o", "-q", zip, `${PID}.csv`, "-d", RAW]);
+  const lines = fs.readFileSync(path.join(RAW, `${PID}.csv`), "utf8").split(/\r?\n/);
+  const head = lines[0].replace(/^\uFEFF/, "").split('","').map((h) => h.replace(/"/g, ""));
+  const col = (name) => head.indexOf(name);
+  const iDate = col("REF_DATE"), iGeo = col("GEO"), iProd = col("Products and product groups"), iVal = col("VALUE");
+  const wanted = ["Purchase of new passenger vehicles", "Purchase of passenger vehicles"];
+  for (const series of wanted) {
+    const annual = {};
+    for (const line of lines.slice(1)) {
+      const c = line.split('","').map((x) => x.replace(/"/g, ""));
+      if (c[iGeo] === "Canada" && c[iProd] === series && c[iVal]) annual[+c[iDate]] = +c[iVal];
+    }
+    if (Object.keys(annual).length > 5) {
+      fs.writeFileSync(
+        path.join(RAW, "statcan-new-vehicle-cpi.json"),
+        JSON.stringify({ series: `${series} (2002=100), table 18-10-0005-01`, fetchedAt: new Date().toISOString(), annual }, null, 2),
+      );
+      console.log(`StatCan CPI: ${series}, ${Object.keys(annual).length} years`);
+      return;
+    }
+  }
+  throw new Error("StatCan CPI series not found in table");
+}
+
 fs.mkdirSync(RAW, { recursive: true });
 await fetchNrcan();
 await fetchEpa();
+try {
+  await fetchCpi();
+} catch (e) {
+  console.warn(`StatCan CPI not downloaded (${e.message}). Prices for older years will not be inflation-adjusted.`);
+}

@@ -1,0 +1,36 @@
+make,family,year,price,fuel,match,source_name,source_url,checked,note
+Toyota,RAV4,2026,37500,hybrid,,Toyota Canada media release,https://media.toyota.ca/en/releases/2026/the-canadian-built-rav4-is-all-new-for-2026--and-offered-at-sugg.html,2026-10-28,2026 RAV4 is hybrid-only
+Toyota,RAV4,2026,48750,phev,,Auto123,https://www.auto123.com/en/news/2026-toyota-rav4-plugin-hybrid-pricing-canada/73708,2026-10-28,
+Toyota,Corolla,2026,24520,gas,,Auto123,https://www.auto123.com/en/news/2026%20toyota-corolla-price-trims-hybrid-canada/73183,2026-10-28,L FWD
+Toyota,Corolla,2026,27740,hybrid,,Auto123,https://www.auto123.com/en/news/2026%20toyota-corolla-price-trims-hybrid-canada/73183,2026-10-28,Hybrid LE
+Toyota,Camry,2026,34575,hybrid,,Auto123,https://www.auto123.com/en/news/2026-toyota-camry-pricing-canada/73177/,2026-10-28,SE FWD; Camry is hybrid-only
+Toyota,Tacoma,2026,48895,gas,,Autotrader.ca research,https://www.autotrader.ca/cars/toyota/tacoma/2026,2026-10-28,
+Toyota,Tundra,2026,54340,gas,,Auto123,https://www.auto123.com/en/news/2026-toyota-tundra-updates-pricing-canada/73078,2026-10-28,Double Cab 4x2 SR
+Toyota,Grand Highlander,2026,51635,gas,,Auto123,https://www.auto123.com/en/news/2026-toyota-grand-highlander-canada-price/73185,2026-10-28,XLE
+Toyota,Grand Highlander,2026,54935,hybrid,,Auto123,https://www.auto123.com/en/news/2026-toyota-grand-highlander-canada-price/73185,2026-10-28,XLE Hybrid
+Toyota,Corolla Cross,2026,28580,gas,,Toyota Canada media release,https://media.toyota.ca/en/releases/2025/what-s-new--the-2026-toyota-corolla-cross.html,2026-10-28,L FWD
+Toyota,Corolla Cross,2026,35810,hybrid,,Auto123,https://www.auto123.com/en/news/2026-toyota-corolla-cross-updates-price/73075/,2026-10-28,SE AWD hybrid
+Honda,Civic,2026,28340,gas,,Autotrader.ca research,https://www.autotrader.ca/research/honda/civic%20sedan/2026/,2026-10-28,Sedan
+Honda,CR-V,2026,36975,gas,,Lallier Honda (dealer news),https://www.lallierhondapat.com/en/news/view/whats-the-price-of-the-new-2026-cr-v-/143649,2026-10-28,LX
+Honda,HR-V,2026,30300,,,Autotrader.ca research,https://qatdrrespweb2.autotrader.ca/research/honda/hr-v/2026,2026-10-28,
+Ford,F-150,2026,53735,gas,,CarsFrenzy (citing ford.ca March 2026),https://carsfrenzy.net/?p=31266,2026-10-28,XL; secondary source
+Ford,Bronco Sport,2026,39245,,,Autotrader.ca research,https://qatdrrespweb5.autotrader.ca/research/ford/bronco sport/2026,2026-10-28,
+Ford,Explorer,2026,50100,gas,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Ford-Explorer/72719,2026-10-28,
+Nissan,Rogue,2026,34398,gas,,Auto123 / RPM,https://rpmweb.ca/actualites-et-chroniques/actualites/nouvelles/le-nissan-rogue-2026-sera-vendu-au-prix-de-base-de-37-186,2026-10-28,S AWD
+Nissan,Rogue,2026,58698,phev,,Auto123,https://www.auto123.com/en/news/2026-nissan-rogue-phev-price-canada/73653/,2026-10-28,
+Nissan,Sentra,2026,25268,,,Auto123,https://www.auto123.com/en/news/2026-nissan-sentra-pricing-canada/73411,2026-10-28,S
+Mazda,CX-5,2026,36300,,,Auto123,https://www.auto123.com/en/news/2026-mazda-cx5-price-increase/73570/,2026-10-28,GX
+Mazda,CX-30,2026,29300,,,Mazda Canada media release,https://en.media.mazda.ca/2025-12-02-2026-Mazda-CX-30-Pricing-and-Packaging,2026-10-28,GX
+Tesla,Model 3,2026,39490,,,Drive Tesla Canada,https://driveteslacanada.ca/news/tesla-model-3-premium-awd-canada-under-50000/,2026-10-28,Premium RWD (Sept 2026)
+Tesla,Model 3,2026,74990,,Performance,Drive Tesla Canada,https://driveteslacanada.ca/news/tesla-model-3-premium-awd-canada-under-50000/,2026-10-28,
+Tesla,Model Y,2026,49990,,,ThinkEV Canada,https://thinkev.ca/blog/tesla-model-y-juniper-canada-review-2026,2026-10-28,Standard RWD
+Tesla,Model Y,2026,69990,,Performance,Drive Tesla Canada,https://driveteslacanada.ca/model-y/tesla-model-y-performance-gets-big-price-drop-in-canada-now-eligible-for-rebates/,2026-10-28,Price cut Sept 2026
+Hyundai,Elantra,2026,22999,gas,,Autotrader.ca research,https://faceted.beta.autotrader.ca/research/comparison/2026-elantra-elantra n,2026-10-28,
+Hyundai,Kona,2026,26749,gas,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Hyundai-Kona/72601,2026-10-28,
+Hyundai,Santa Fe,2026,43799,hybrid,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Hyundai-Santa-Fe-Hybrid/73105/,2026-10-28,Hybrid only in Canada for 2026
+Hyundai,IONIQ 5,2026,55499,,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Hyundai-IONIQ-5/73298,2026-10-28,
+Kia,Sportage,2026,31995,gas,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Kia-Sportage/70898,2026-10-28,
+Kia,Seltos,2026,25895,,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Kia-Seltos/69500,2026-10-28,
+Subaru,Forester,2026,34195,gas,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Subaru-Forester/74200,2026-10-28,Convenience
+Subaru,Crosstrek,2026,30595,gas,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Subaru-Crosstrek/74105,2026-10-28,
+Chevrolet,Equinox,2026,33999,,,CarCostCanada,https://carcostcanada.com/Canada/TrimPrices/2026-Chevrolet-Equinox/65807,2026-10-28,

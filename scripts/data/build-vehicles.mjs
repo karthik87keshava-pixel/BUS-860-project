@@ -131,6 +131,7 @@ function matchEpa(year, make, model, engineL, cyl) {
 const FAMILY_PREFIXES = {
   "Land Rover": ["Range Rover Sport", "Range Rover Evoque", "Range Rover Velar", "Range Rover", "Discovery Sport", "Discovery", "Defender", "LR2", "LR4"],
   Lincoln: ["Grand Marquis", "Town Car"],
+  FIAT: ["500X", "500L", "500e", "500", "124 Spider"],
   Ram: ["Cargo Van", "ProMaster City", "Promaster City", "ProMaster", "1500", "2500"],
   Dodge: ["Grand Caravan", "Ram 1500", "Journey", "Durango", "Challenger", "Charger", "Dart", "Avenger", "Caliber", "Nitro", "Viper", "Hornet"],
   Chrysler: ["Town & Country", "Grand Caravan", "Pacifica", "200", "300"],
@@ -161,7 +162,8 @@ function familyName(make, rawModel, epaBase) {
   }
   if (make === "BMW" && /^alpina/i.test(model)) return "ALPINA";
   if (make === "Ford" && /^shelby/i.test(model)) return "Mustang";
-  if (make === "Ford" && /^T-1[58]0|^Transit/i.test(model)) return "Transit";
+  if (make === "Ford" && /^Transit Connect/i.test(model)) return "Transit Connect";
+  if (make === "Ford" && /^(T-1[58]0|Transit)/i.test(model)) return "Transit";
   if (make === "Audi" && /^allroad/i.test(model)) return "A4 allroad";
   const list = FAMILY_PREFIXES[make];
   if (list && list.length) {
@@ -169,6 +171,9 @@ function familyName(make, rawModel, epaBase) {
     if (hit) return hit;
   }
   if (make === "BMW") {
+    // "M340i" and "M760i" are M Performance versions of the 3 and 7 Series, not the M3 / M7
+    const mp = /^M(\d)\d\d[a-z]/i.exec(model);
+    if (mp) return `${mp[1]} Series`;
     const m = /^(\d)\d\d[a-z]*/i.exec(model);
     if (m) return `${m[1]} Series`;
     const x = /^(i[X3-8]|X[1-7]M?|Z4|M\d|XM|i\d)/.exec(model);
@@ -207,6 +212,11 @@ function familyName(make, rawModel, epaBase) {
 // Full hybrids that don't say "Hybrid" in their NRCan name
 const HYBRID_NAME = /hybrid|\bprius\b|\binsight\b|\b\d{3}h\b|\bhev\b|\bioniq\b(?! ?\d)|\bniro\b(?! ?ev)|\bcr-z\b|\bclarity\b/i;
 const MILD = /\bmhev\b|mild|eassist/i;
+// Model years in which a family was sold only as a full hybrid in Canada, so every gas row is really a hybrid
+const HYBRID_ONLY = [
+  ["Toyota", "RAV4", 2026], ["Toyota", "Camry", 2025], ["Toyota", "Sienna", 2021], ["Toyota", "Venza", 2021],
+  ["Toyota", "Crown", 2023], ["Toyota", "Crown Signia", 2025], ["Toyota", "Sequoia", 2023], ["Toyota", "Land Cruiser", 2024],
+];
 
 // ---------- build ----------
 const manifest = JSON.parse(fs.readFileSync(path.join(RAW, "nrcan-manifest.json"), "utf8"));
@@ -288,6 +298,9 @@ for (const file of manifest.files) {
       if (epaSaysHybrid && !nameSaysHybrid) epaFixes.push(`${year} ${make} ${model}: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)`);
     }
 
+    if (v.fuelType === "gas" && HYBRID_ONLY.some(([mk, fam, from]) => mk === make && familyName(make, model, epa?.baseModel) === fam && year >= from)) {
+      v.fuelType = "hybrid";
+    }
     v.classBucket = classBucket(v.nrcanClass, epa?.VClass, v.engineL);
     v.body = bodyType(v.classBucket, model);
     v.drive = driveFromName(model, epa?.drive);

@@ -2,7 +2,7 @@
 
 Generated 2026-10-28 by `npm run data:build`. Source: NRCan Fuel Consumption Ratings (https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), downloaded 2026-10-28, cross-checked with US EPA fueleconomy.gov.
 
-**17,569 vehicle versions** from model year 2010 to 2026, 56 makes, 667 model families.
+**17,569 vehicle versions** from model year 2010 to 2026, 56 makes, 668 model families.
 
 ## Source files
 
@@ -19,12 +19,12 @@ Generated 2026-10-28 by `npm run data:build`. Source: NRCan Fuel Consumption Rat
 
 | Year | Gas | Hybrid | Plug-in hybrid | Electric | Diesel | Total |
 |---|---:|---:|---:|---:|---:|---:|
-| 2026 | 535 | 59 | 57 | 277 | 16 | 944 |
-| 2025 | 630 | 55 | 56 | 279 | 13 | 1033 |
-| 2024 | 717 | 48 | 45 | 224 | 18 | 1052 |
-| 2023 | 843 | 40 | 33 | 159 | 20 | 1095 |
-| 2022 | 897 | 37 | 41 | 82 | 28 | 1085 |
-| 2021 | 893 | 34 | 40 | 49 | 29 | 1045 |
+| 2026 | 528 | 66 | 57 | 277 | 16 | 944 |
+| 2025 | 626 | 59 | 56 | 279 | 13 | 1033 |
+| 2024 | 716 | 49 | 45 | 224 | 18 | 1052 |
+| 2023 | 842 | 41 | 33 | 159 | 20 | 1095 |
+| 2022 | 896 | 38 | 41 | 82 | 28 | 1085 |
+| 2021 | 891 | 36 | 40 | 49 | 29 | 1045 |
 | 2020 | 900 | 32 | 31 | 40 | 20 | 1023 |
 | 2019 | 960 | 31 | 26 | 35 | 27 | 1079 |
 | 2018 | 978 | 30 | 25 | 21 | 28 | 1082 |
