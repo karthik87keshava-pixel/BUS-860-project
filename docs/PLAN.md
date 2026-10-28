@@ -1,6 +1,6 @@
 # DriveTally — project plan (step 1 of 7)
 
-Status: **waiting for the team's OK** (written 2026-10-28).
+Status: **approved 2026-10-28** (team decisions on approval are in DECISIONS.md).
 Full brief: [`BUILD_PROMPT.md`](BUILD_PROMPT.md).
 
 ---
