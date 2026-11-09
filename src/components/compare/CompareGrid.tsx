@@ -69,31 +69,43 @@ export function CompareGrid({
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
 
-  // Once the photos have scrolled out of view, the sticky header shrinks to name + payment option
+  // Once the page has scrolled past the top of the column headers, the sticky header shrinks to name + payment option
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setCompact(!e.isIntersecting && e.boundingClientRect.top < 0), { rootMargin: "-260px 0px 0px 0px" });
-    io.observe(el);
-    return () => io.disconnect();
+    const check = () => setCompact(el.getBoundingClientRect().top < -40);
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
   }, []);
 
-  // Keep the header and the rows scrolled together sideways (phones)
+  // Keep the header and the rows scrolled together sideways (phones). Only the part being scrolled leads;
+  // copying both ways (and fractions of a pixel on phones) would cancel swipes and smooth scrolling.
   useEffect(() => {
     const h = headRef.current;
     const b = bodyRef.current;
     if (!h || !b) return;
-    const fromBody = () => {
-      if (h.scrollLeft !== b.scrollLeft) h.scrollLeft = b.scrollLeft;
+    let leader: HTMLElement | null = null;
+    let release = 0;
+    const follow = (from: HTMLElement, to: HTMLElement) => () => {
+      if (leader && leader !== from) return;
+      leader = from;
+      if (Math.abs(to.scrollLeft - from.scrollLeft) >= 1) to.scrollLeft = from.scrollLeft;
+      window.clearTimeout(release);
+      release = window.setTimeout(() => (leader = null), 150);
     };
-    const fromHead = () => {
-      if (b.scrollLeft !== h.scrollLeft) b.scrollLeft = h.scrollLeft;
-    };
+    const fromBody = follow(b, h);
+    const fromHead = follow(h, b);
     b.addEventListener("scroll", fromBody, { passive: true });
     h.addEventListener("scroll", fromHead, { passive: true });
     return () => {
       b.removeEventListener("scroll", fromBody);
       h.removeEventListener("scroll", fromHead);
+      window.clearTimeout(release);
     };
   }, []);
 
@@ -101,7 +113,7 @@ export function CompareGrid({
   // Desktop: label column + one column per slot. Phones: no label column (labels sit above each row).
   const gridStyle = { "--slots": slots } as React.CSSProperties;
   const gridClass =
-    "grid grid-cols-[repeat(var(--slots),minmax(78vw,1fr))] sm:grid-cols-[repeat(var(--slots),minmax(300px,1fr))] lg:grid-cols-[220px_repeat(var(--slots),minmax(0,1fr))]";
+    "grid grid-cols-[repeat(var(--slots),78vw)] sm:grid-cols-[repeat(var(--slots),320px)] lg:grid-cols-[220px_repeat(var(--slots),minmax(0,1fr))]";
 
   const sections = buildSections(shared, units);
   const years = shared.years;
@@ -121,8 +133,31 @@ export function CompareGrid({
       <div ref={sentinelRef} aria-hidden />
       {/* Sticky column headers */}
       <div className="sticky top-0 z-30 border-b border-line bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] print:static">
+        {/* Phones and tablets: buttons to move between columns (swiping works too) */}
+        {cols.length > 0 && (
+          <div className="no-print mx-auto flex max-w-7xl items-center justify-between px-4 pt-2 text-xs text-muted sm:px-6 lg:hidden">
+            <span>Swipe or tap the arrows to see each vehicle</span>
+            <span className="flex gap-2">
+              {([-1, 1] as const).map((dir) => (
+                <button
+                  key={dir}
+                  type="button"
+                  aria-label={dir < 0 ? "Previous vehicle" : "Next vehicle"}
+                  onClick={() => {
+                    const b = bodyRef.current;
+                    const cell = b?.querySelector<HTMLElement>(".snap-start");
+                    if (b) b.scrollBy({ left: dir * (cell?.offsetWidth ?? b.clientWidth * 0.8), behavior: "smooth" });
+                  }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-lg leading-none text-fg hover:border-fg"
+                >
+                  {dir < 0 ? "‹" : "›"}
+                </button>
+              ))}
+            </span>
+          </div>
+        )}
         <div ref={headRef} className="no-scrollbar mx-auto max-w-7xl overflow-x-auto px-4 sm:px-6 print:overflow-visible">
-          <div className={gridClass} style={gridStyle}>
+          <div className={`w-max min-w-full lg:w-auto ${gridClass}`} style={gridStyle}>
             <div className="hidden items-end pb-4 text-sm text-muted lg:flex">
               {cols.length ? `${years}-year cost, Alberta` : "Add up to four vehicles to compare."}
             </div>
@@ -145,11 +180,12 @@ export function CompareGrid({
         </div>
       </div>
 
-      <div ref={bodyRef} className="no-scrollbar mx-auto max-w-7xl snap-x snap-mandatory overflow-x-auto px-4 sm:px-6 lg:snap-none print:overflow-visible">
+      <div ref={bodyRef} className="no-scrollbar mx-auto max-w-7xl snap-x snap-proximity overflow-x-auto px-4 sm:px-6 lg:snap-none print:overflow-visible">
         {cols.length === 0 ? (
           <p className="py-16 text-center text-muted">Your comparison is empty. Use “Add vehicle” to start.</p>
         ) : (
-          <>
+          // As wide as all the columns, so row lines run the full width when scrolled sideways
+          <div className="w-max min-w-full lg:w-auto">
             {/* Summary block, always open */}
             <SummaryRows cols={cols} gridClass={gridClass} gridStyle={gridStyle} units={units} years={years} lowest={lowest} />
             {sections.map((s) => {
@@ -194,7 +230,7 @@ export function CompareGrid({
                 </section>
               );
             })}
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -215,7 +251,7 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
         ×
       </button>
       <div className={compact ? "hidden" : ""}>
-      <div className="aspect-[16/9] w-full overflow-hidden rounded-lg bg-soft print:aspect-[3/1]">
+      <div className="aspect-[16/9] max-h-[28vh] w-full overflow-hidden rounded-lg bg-soft print:aspect-[3/1]">
         {v.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={v.photo.url} alt={v.photo.match === "year" ? `${v.year} ${v.make} ${v.family} (may not show this exact trim or colour)` : `${v.make} ${v.family} (photo of the model, may not show this year or trim)`} className="h-full w-full object-cover" loading="lazy" />

@@ -29,6 +29,7 @@ html {
 }
 
 body {
+  overflow-x: clip; /* nothing may make the page wider than the phone (would make Chrome zoom out); clip keeps sticky headers working */
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);

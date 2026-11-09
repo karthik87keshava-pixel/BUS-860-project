@@ -53,7 +53,9 @@ export function CostChart({ names, cumulative }: { names: string[]; cumulative: 
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <table className="sr-only">
+      {/* Screen-reader copy of the chart. Wrapped, because a table ignores sr-only sizing and would widen the page on phones. */}
+      <div className="sr-only">
+      <table>
         <caption>Cumulative cost by year</caption>
         <thead>
           <tr>
@@ -74,6 +76,7 @@ export function CostChart({ names, cumulative }: { names: string[]; cumulative: 
           ))}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }

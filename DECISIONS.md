@@ -85,6 +85,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 
 ## Testing
 
+- **2026-11-09** — Phone fixes after team testing on Android Chrome: (1) the screen-reader copy of the chart (a hidden table) was 731 px wide and made Chrome zoom the whole page out, so the comparison couldn't scroll sideways — now wrapped, and the page can never be wider than the screen; (2) the header row and the table copied each other's sideways position back and forth, which cancelled swipes — now only the part being swiped leads; (3) the sticky header now reliably shrinks to names and payment buttons once you scroll into the table (it covered the whole screen in landscape), and photos are capped at 28% of the screen height; (4) arrow buttons (‹ ›) to step between vehicles on phones and tablets; columns have a fixed width there so the header and rows always line up. Checked on Pixel 7 portrait and landscape, iPhone 13 size and desktop.
+
 - **2026-11-09** — Accessibility: automated axe-core scan (WCAG 2.0/2.1 A and AA rules) on home, compare (with three vehicles), how-we-calculate, sign-in and my-comparisons: **0 issues**. Every editable number now has a plain screen-reader name (e.g. "Down payment, 2026 Toyota RAV4 AWD LE").
 - **2026-11-09** — Print / PDF: prints landscape with the driving assumptions, date and site address at the top; buttons, info icons and input boxes are hidden; only the chosen payment option shows.
 
