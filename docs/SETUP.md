@@ -7,8 +7,8 @@ Do these in order. Each step ends with something to send back to Claude Code. Us
 1. Go to https://supabase.com and click **Start your project**. Sign up with **Continue with GitHub** (use the GitHub account that owns the `BUS-860-project` repository).
 2. Click **New project**. Organization: your personal one is fine. Name: `drivetally`. Database password: click **Generate a password** and save it in your team password manager (we won't need it in the code). Region: **Canada (Central)**. Plan: **Free**. Click **Create new project** and wait about 2 minutes.
 3. In the left menu click **SQL Editor** → **New query**. Open `supabase/schema.sql` from GitHub, copy all of it, paste it in, and click **Run**. You should see "Success. No rows returned".
-4. In the left menu click **Project Settings** (gear) → **API** (or **Data API**). Copy the **Project URL** and the **anon public** key. Do **not** copy the `service_role` key.
-5. Send both values to Claude Code (the anon key is designed to be public, so chat is fine for it).
+4. In the left menu click **Project Settings** (gear). Under **Data API** copy the **Project URL** (like `https://abcdefgh.supabase.co`). Under **API Keys** copy the **Publishable key** (starts with `sb_publishable_`; older projects call it the "anon public" key). Do **not** copy the **Secret key** (`sb_secret_…`) or the `service_role` key.
+5. Send both values to Claude Code (the publishable key is designed to be public, so chat is fine for it).
 
 ## Step 2 — Vercel (hosting)
 
@@ -16,7 +16,7 @@ Do these in order. Each step ends with something to send back to Claude Code. Us
 2. Click **Add New… → Project**. Find `BUS-860-project` and click **Import**. If it isn't listed, click **Adjust GitHub App Permissions** and give Vercel access to that repository.
 3. Before clicking Deploy, open **Environment Variables** and add:
    - `NEXT_PUBLIC_SUPABASE_URL` = the Project URL from Step 1
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = the anon public key from Step 1
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = the publishable key from Step 1
 4. Click **Deploy** and wait about 2 minutes. Copy the address it gives you (like `https://bus-860-project.vercel.app`) and send it to Claude Code.
 5. Back in Supabase: **Authentication → URL Configuration**. Set **Site URL** to the Vercel address, and under **Redirect URLs** add `https://YOUR-ADDRESS.vercel.app/**` and `http://localhost:3000/**`. Click **Save**.
 
