@@ -1,7 +1,7 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { supabase, supabaseConfigured, useSession } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured, useSession } from "@/lib/supabase";
 
 export function SignInForm() {
   const params = useSearchParams();
@@ -16,7 +16,7 @@ export function SignInForm() {
     if (ready && session) router.replace(next);
   }, [ready, session, next, router]);
 
-  if (!supabaseConfigured) {
+  if (!isSupabaseConfigured()) {
     return (
       <p className="mt-8 rounded-lg border border-line bg-soft p-4 text-sm">
         Sign-in isn&rsquo;t switched on yet. The site owner needs to add the Supabase keys (see README). You can still build and share comparisons.

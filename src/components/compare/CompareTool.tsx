@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { calculateColumn, defaultShared, lowestCost, resolveColumn, type ColumnInputs, type Payment, type SharedInputs } from "@/lib/calc";
 import { decodeState, emptyState, encodeState, MAX_COLUMNS, type ComparisonState } from "@/lib/state";
-import { supabase, supabaseConfigured, useSession } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured, useSession } from "@/lib/supabase";
 import type { Photo, Vehicle } from "@/lib/vehicle-types";
 import { AddVehicle } from "./AddVehicle";
 import { CompareGrid, type Col } from "./CompareGrid";
@@ -34,7 +34,7 @@ export function CompareTool() {
   useEffect(() => {
     const fromUrl = decodeState(params.get("s"));
     const id = params.get("id");
-    if (id && supabaseConfigured) {
+    if (id && isSupabaseConfigured()) {
       // A saved comparison: the row tells us its name and that "Save" should update it.
       // If the URL also carries state (unsaved edits after a reload), that wins over the stored state.
       supabase()!

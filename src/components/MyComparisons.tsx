@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { ComparisonState } from "@/lib/state";
-import { supabase, supabaseConfigured, useSession, type SavedComparison } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured, useSession, type SavedComparison } from "@/lib/supabase";
 
 export function MyComparisons() {
   const { session, ready } = useSession();
@@ -19,7 +19,7 @@ export function MyComparisons() {
     if (session) load();
   }, [session, load]);
 
-  if (!supabaseConfigured) return <p className="mt-6 text-muted">Saving isn&rsquo;t switched on yet (Supabase keys missing).</p>;
+  if (!isSupabaseConfigured()) return <p className="mt-6 text-muted">Saving isn&rsquo;t switched on yet (Supabase keys missing).</p>;
   if (!ready) return <p className="mt-6 text-muted">Loading…</p>;
   if (!session)
     return (

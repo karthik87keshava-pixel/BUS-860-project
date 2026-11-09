@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { supabase, supabaseConfigured, useSession } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured, useSession } from "@/lib/supabase";
 
 const NAV = [
   { href: "/compare", label: "Compare" },
@@ -44,7 +44,7 @@ export function SiteHeader() {
             <Link
               href={`/sign-in?next=${encodeURIComponent(path ?? "/")}`}
               className="rounded-full border border-fg px-4 py-1.5 hover:bg-fg hover:text-white"
-              title={supabaseConfigured ? undefined : "Sign-in is not set up yet"}
+              title={isSupabaseConfigured() ? undefined : "Sign-in is not set up yet"}
             >
               Sign in
             </Link>

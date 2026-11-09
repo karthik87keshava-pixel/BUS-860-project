@@ -3,6 +3,7 @@ import "@fontsource-variable/inter";
 import "./globals.css";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SupabaseConfig } from "@/lib/supabase";
 import { UnitsProvider } from "@/lib/units";
 
 export const metadata: Metadata = {
@@ -17,6 +18,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en-CA">
       <body className="flex min-h-screen flex-col antialiased">
+        <SupabaseConfig
+          url={process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL}
+          publishableKey={process.env.SUPABASE_PUBLISHABLE ?? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        >
         <UnitsProvider>
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-3 focus:py-2">
             Skip to content
@@ -27,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </main>
           <SiteFooter />
         </UnitsProvider>
+        </SupabaseConfig>
       </body>
     </html>
   );

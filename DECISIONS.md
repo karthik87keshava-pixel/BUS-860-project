@@ -63,6 +63,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 - **2026-10-28** — No discounting (time value of money). Listed as a limit on "How we calculate"; could be an option in December.
 - **2026-10-28** — Units: miles mode shows miles, US mpg (235.2 ÷ L/100 km) and miles per kWh. All maths stays metric.
 
+- **2026-11-09** — Vercel refuses to store the Supabase publishable key under a `NEXT_PUBLIC_` name (it treats it as a leaked secret). The key is public by design, so the site now reads `SUPABASE_URL` and `SUPABASE_PUBLISHABLE` on the server and passes them to the browser through the root layout. The secret key is never used.
+
 ## Design
 
 - **2026-10-28** — Name "DriveTally" (placeholder; alternatives offered: Kilo, TrueRide AB, CostLane). Accent deep teal `#0F766E` (5.5:1 contrast on white). Inter font. Layout modelled on the feel of a premium car-maker compare page (white space, black text, aligned rows, collapsible sections) without using any of its branding, fonts, photos or text.
