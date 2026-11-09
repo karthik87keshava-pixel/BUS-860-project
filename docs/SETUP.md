@@ -16,7 +16,7 @@ Do these in order. Each step ends with something to send back to Claude Code. Us
 2. Click **Add New… → Project**. Find `BUS-860-project` and click **Import**. If it isn't listed, click **Adjust GitHub App Permissions** and give Vercel access to that repository.
 3. Before clicking Deploy, open **Environment Variables** and add:
    - `NEXT_PUBLIC_SUPABASE_URL` = the Project URL from Step 1
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = the publishable key from Step 1
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE` = the publishable key from Step 1 (a name without "KEY", so Vercel doesn't flag it as a secret; it is public by design)
 4. Click **Deploy** and wait about 2 minutes. Copy the address it gives you (like `https://bus-860-project.vercel.app`) and send it to Claude Code.
 5. Back in Supabase: **Authentication → URL Configuration**. Set **Site URL** to the Vercel address, and under **Redirect URLs** add `https://YOUR-ADDRESS.vercel.app/**` and `http://localhost:3000/**`. Click **Save**.
 

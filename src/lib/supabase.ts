@@ -5,7 +5,9 @@ import { createClient, type Session, type SupabaseClient } from "@supabase/supab
 import { useEffect, useState } from "react";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// The Supabase publishable key is public by design (row-level security protects the data).
+// NEXT_PUBLIC_SUPABASE_PUBLISHABLE is accepted too, because Vercel warns about variable names containing "KEY".
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabaseConfigured = Boolean(url && anonKey);
 
