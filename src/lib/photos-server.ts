@@ -13,13 +13,14 @@ const COMMONS = "https://commons.wikimedia.org/w/api.php";
 const HEADERS = { "User-Agent": "Fairdrive/1.0 (University of Alberta BUS 860 student project; https://github.com/karthik87keshava-pixel/BUS-860-project)" };
 const MONTH = 60 * 60 * 24 * 30;
 
-const photos = cached as Record<string, Photo | null>;
+// Pre-fetched photos per make|model; "year" (when known) is the model year shown, so captions stay accurate
+const photos = cached as Record<string, (Photo & { year?: number }) | null>;
 
 const FREE = /^(cc|public domain|pd|cc0)/i;
 // Not the version sold in Canada, or not a regular car: other markets, fleet and race cars
 const NOT_CANADIAN = /market|china|chinese|japan|jdm|india|brazil|australia|europe|uk\b|thailand|indonesia|mexico|russia|moscow|hong kong|motor show|auto show|mobility show|\bshow\b|salon|gims|expo|police|ranger|taxi|patrol|ambulance|fire|sheriff|rcmp|rally|racing|race car|\brace\b|nascar|modified|tuned|wrap|livery|prototype|concept|camouflage|mule/i;
 // Not a photo of the whole car from outside
-const NOT_EXTERIOR = /interior|dashboard|cockpit|engine|motor\b|badge|logo|emblem|wheel|rim|seat|trunk|boot|cargo|detail|charging|charge port|steering|instrument|gauge|display|screen|headlight|taillight|light|grille|key|plate|cutaway|chassis|crash|wreck|accident|toy|model car|lego/i;
+const NOT_EXTERIOR = /interior|dashboard|brake|caliper|tire|tyre|mirror|door|hood|bonnet|roof rack|cockpit|engine|motor\b|badge|logo|emblem|wheel|rim|seat|trunk|boot|cargo|detail|charging|charge port|steering|instrument|gauge|display|screen|headlight|taillight|light|grille|key|plate|cutaway|chassis|crash|wreck|accident|toy|model car|lego/i;
 
 function stripHtml(s: string) {
   return s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
@@ -27,7 +28,12 @@ function stripHtml(s: string) {
 
 async function api(base: string, params: Record<string, string>) {
   const url = `${base}?${new URLSearchParams({ format: "json", formatversion: "2", ...params })}`;
-  const res = await fetch(url, { headers: HEADERS, next: { revalidate: MONTH } });
+  let res = await fetch(url, { headers: HEADERS, next: { revalidate: MONTH } });
+  if (res.status === 429) {
+    // Wikimedia asks busy clients to slow down: wait a moment and try once more
+    await new Promise((r) => setTimeout(r, 1200));
+    res = await fetch(url, { headers: HEADERS, next: { revalidate: MONTH } });
+  }
   if (!res.ok) throw new Error(`Wikimedia ${res.status}`);
   return res.json();
 }
@@ -150,7 +156,11 @@ export async function findPhoto(make: string, family: string, year?: number, fue
   } catch (e) {
     console.warn(`[photos] year lookup failed for ${key} ${year}: ${(e as Error).message}`);
   }
-  if (key in photos && photos[key] && !wrongVersion(photos[key]!.pageUrl, fuelType)) return { ...photos[key]!, match: "model" };
+  const stored = photos[key];
+  if (stored && !wrongVersion(stored.pageUrl, fuelType)) {
+    const { year: shownYear, ...photo } = stored;
+    return { ...photo, match: year && shownYear && Math.abs(shownYear - year) <= 1 ? "year" : "model" };
+  }
   try {
     const p = await modelPhoto(make, family, fuelType);
     if (!p) console.warn(`[photos] no free photo for ${key}`);
