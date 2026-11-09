@@ -35,6 +35,9 @@ Every assumption, data source and design choice, with the date. Sources for each
 
 - **2026-11-09** — 11 more verified 2026 prices added (Ram 1500, Pilot, Accord gas and hybrid, Sienna, Highlander, Palisade, Outback, Escape, Compass, Wrangler). Skipped because sources disagree: Maverick, Equinox EV. Kia skipped the 2026 Telluride model year, so its 2025 price stays an estimate.
 
+- **2026-11-09** — 80 more verified 2026 prices: EVs (EV9, IONIQ 9, Mach-E, LEAF, Ariya, bZ, Solterra, Blazer EV, OPTIQ, EX30, EX40, Polestar 4, R1T, R1S, Cayenne Electric) and luxury models (BMW X3, X5, 3 Series; Mercedes GLC gas and plug-in, GLE; Audi Q5, A5; Lexus RX, NX, ES; Acura RDX, MDX; Volvo XC40, XC60 gas and plug-in, XC90; Genesis GV70, GV80; Porsche Macan). **141 versions verified in total.** Skipped because sources disagree or are out of date: Niro EV, Kona Electric, IONIQ 6, ID.4, Equinox EV, Audi Q7, Mercedes C-Class, Porsche 911. Kia EV6 has no 2026 model.
+- **2026-11-09** — Rule fixes found while checking: fuel-type premiums are now also capped in dollars (hybrid $5,000, plug-in $12,000, electric $15,000), because a battery costs about the same on any car (2026 X5 plug-in: $120,300 → $104,500); BMW X-model M versions count as high-performance (X5 M Competition: $103,600 → $155,400); Cybertruck estimate raised to its $137,990 Canadian launch price (was $115,000).
+
 ## Photos
 
 - **2026-10-28** — Lead image of the "<Make> <Model>" Wikipedia article, used only if its Commons licence is Creative Commons or public domain; photographer and licence shown under the photo with links. One photo per model family (not per year/trim) for the November version. No free photo → a drawn body-type outline (sedan, SUV, truck, hatchback, van, wagon, coupe, convertible).

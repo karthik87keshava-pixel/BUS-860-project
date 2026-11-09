@@ -133,8 +133,8 @@ export default function HowWeCalculate() {
         </li>
         <li>
           <strong>Version:</strong> +7% for AWD/4WD when the family also comes in 2WD; +12% for every two extra cylinders; +15% for a much more powerful
-          electric motor; +10% for a hybrid, +30% for a plug-in hybrid and +35% for an electric version when no fuel-specific base price exists; +10% for
-          mid trims (XLE, EX-L, Lariat…), +22% for upper trims (Limited, Platinum, Denali…), +50% for high-performance versions (Raptor, Type R, AMG 63…)
+          electric motor; +10% for a hybrid (at most $5,000), +30% for a plug-in hybrid (at most $12,000) and +35% for an electric version (at most $15,000) when no fuel-specific base price exists — a battery costs roughly the same in dollars on a cheap or an expensive car; +10% for
+          mid trims (XLE, EX-L, Lariat…), +22% for upper trims (Limited, Platinum, Denali…), +50% for high-performance versions (Raptor, Type R, AMG 63, BMW X-model M…)
           and +90% for top performance versions (Turbo S, Plaid, Hellcat…). Total adjustment is capped at 2.5×. Well-known performance trims have their own
           base price instead.
         </li>

@@ -756,7 +756,7 @@ Suzuki,Grand Vitara,2013,25000,,,
 Suzuki,Kizashi,2013,24000,,,
 Suzuki,SX4,2013,19000,,,
 Suzuki,Swift,2011,15000,,,
-Tesla,Cybertruck,2025,115000,,,
+Tesla,Cybertruck,2025,137990,,,Canadian launch price (2024) still reported in 2026; not confirmed
 Tesla,Model 3,2025,55000,,,
 Tesla,Model 3,2025,75000,,Performance,
 Tesla,Model S,2025,120000,,,
@@ -859,3 +859,4 @@ Volvo,XC90,2025,88000,phev,,
 smart,fortwo,2018,18000,gas,,
 smart,fortwo,2018,30000,ev,,
 smart EQ,fortwo,2019,30000,,,
+Tesla,Cybertruck,2025,137990,,AWD,Dual-motor AWD launch price

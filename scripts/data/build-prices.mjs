@@ -58,10 +58,13 @@ function indexRatio(fromYear, toYear) {
 // ---------- version rules ----------
 // Extra cost of a fuel type over the gas version of the same model (used only when no fuel-specific base price exists)
 const FUEL_PREMIUM = { gas: 0, diesel: 0.08, hybrid: 0.1, phev: 0.3, ev: 0.35 };
+const FUEL_DOLLAR_CAP = { diesel: 4000, hybrid: 5000, phev: 12000, ev: 15000 };
 const AWD_PREMIUM = 0.07;
 // Only the highest matching keyword applies. Patterns are checked against the NRCan model name.
 const VERSION_RULES = [
   [/\b(Turbo S|Plaid|Hellcat|Demon|TRX|GT500|Trackhawk|Black Series|Black Badge|SVR|Raptor R|ZR1)\b/i, 1.9, "top performance version"],
+  // BMW X-model M versions ("X5 M", "X5 M Competition"): the trim part is just "M" or "M Competition"
+  [/^\s*M(\s+Competition)?\s*$/i, 1.5, "high-performance version"],
   [/\b(Turbo|AMG \w+ 6[35]|RS ?\d|M\d Competition|Z06|ZL1|Raptor|SRT|Type R|GT3|392|Nismo|NISMO|TRD Pro|Shelby|V-Series|Blackwing)\b/i, 1.5, "high-performance version"],
   [/\b(GTS|AMG|M Sport|\bN\b|Si|Type S|ST|SS|R\/T|Scat Pack|GT|Rubicon|Tremor|Denali|Platinum|King Ranch|Limited|Overland|Summit|Pinnacle|Calligraphy|Autobiography|Signature|Prestige|Ultimate)\b/i, 1.22, "upper trim"],
   [/\b(XLE|XSE|EX-L|Touring|Premium|SEL|SXT|Lariat|LTZ|SLT|Laramie|Sport|Luxury|Preferred|GS|GT-Line|Trailhawk|Wilderness|TrailSport|Off-Road|AT4|Z71|Trail Boss)\b/i, 1.1, "mid trim"],
@@ -133,7 +136,9 @@ for (const v of vehicles) {
     const siblings = famYear.get(`${v.make}|${v.family}|${v.year}`) || [v];
     if (!fuelMatched) {
       const fromFuel = anchor.fuel || mainFuel(v);
-      const p = (FUEL_PREMIUM[v.fuelType] ?? 0) - (FUEL_PREMIUM[fromFuel] ?? 0);
+      let p = (FUEL_PREMIUM[v.fuelType] ?? 0) - (FUEL_PREMIUM[fromFuel] ?? 0);
+      // The extra cost of a battery is roughly fixed in dollars, so on expensive cars the percentage is smaller
+      if (p > 0) p = Math.min(p, (FUEL_DOLLAR_CAP[v.fuelType] ?? Infinity) / price);
       if (p) {
         mult *= 1 + p;
         notes.push(`${v.fuelType} version +${Math.round(p * 100)}%`);
