@@ -1,10 +1,10 @@
 # Price coverage
 
-Generated 2026-10-28 by `npm run data:prices`.
+Generated 2026-11-09 by `npm run data:prices`.
 
 **Every one of the 17,569 vehicle versions has a pre-filled price.** 47 are the exact published base price for that model year (verified, with source). The other 17,522 are estimates built from a family base price, the price index and the version rules described on the "How we calculate" page.
 
-**Price index not yet loaded** (www150.statcan.gc.ca was blocked when this ran). Older model years use the family base price with no inflation adjustment until `npm run data:refresh` runs with access.
+Price index: Statistics Canada CPI, Purchase of passenger vehicles (2002=100), table 18-10-0005-01, downloaded 2026-11-09.
 
 - Family base prices: 668 families in `data/prices/family-prices.csv` (estimates)
 - Verified base prices: 35 rows in `data/prices/verified-prices.csv`, each with a source link and date

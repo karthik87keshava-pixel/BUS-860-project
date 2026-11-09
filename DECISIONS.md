@@ -31,6 +31,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 - **2026-10-28** — **Older model years are priced as used cars.** A 2015 car can only be bought used, so pre-filling its 2015 sticker price would mislead. Default condition is "new" only for the newest model year of each family (2025 or later); older years get "used", with price = original MSRP × share of value kept at its age. Users can switch new/used. Leases are always new.
 - **2026-10-28** — Paid options (not used, per team decision): Canadian Black Book licenses data only to qualified companies through its sales team, with no public price list; used-car values are also available from VMR. Licensed car photo services (IMAGIN.studio, EVOX/FuelAPI, used by JATO) also price by quote. Both would need a sales conversation before a public launch.
 
+- **2026-11-09** — Statistics Canada price index loaded (www150.statcan.gc.ca allowed). The annual table 18-10-0005-01 has "Purchase of passenger vehicles" (new and used together), not a new-only series, so that is what we use. Index 2010 = 90.8, 2015 = 95.8, 2020 = 108.4, 2025 = 129.5 (2002 = 100). Spot checks of resulting MSRPs: 2015 Civic $20,700 (actual ≈ $20,000), 2019 RAV4 $27,000 (≈ $28,000), 2012 Camry $23,500 (≈ $24,000).
+
 ## Photos
 
 - **2026-10-28** — Lead image of the "<Make> <Model>" Wikipedia article, used only if its Commons licence is Creative Commons or public domain; photographer and licence shown under the photo with links. One photo per model family (not per year/trim) for the November version. No free photo → a drawn body-type outline (sedan, SUV, truck, hatchback, van, wagon, coupe, convertible).
@@ -75,6 +77,7 @@ Every assumption, data source and design choice, with the date. Sources for each
 ## Status (2026-10-28) and what's next
 
 - Done: data import, prices for every vehicle, calculation module and tests, all five pages, share link, print view, sign-in and saving code.
-- Waiting on the team: Supabase, Vercel and Google accounts (`docs/SETUP.md`), then live testing of sign-in and saving.
-- Waiting on network access: www150.statcan.gc.ca (price index); Wikimedia pre-fetch (works from Vercel).
+- Waiting on the team: Vercel and Google accounts (`docs/SETUP.md`), then live testing of sign-in and saving.
+- 2026-11-09: Supabase project created (Canada Central). Checked from here: table exists, row-level security refuses saving when signed out, email sign-in on. Price index loaded.
+- Waiting on network access: Wikimedia pre-fetch (works from Vercel).
 - December: more verified prices, photos per generation/year, Safari check, accessibility audit, print polish.

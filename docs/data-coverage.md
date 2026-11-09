@@ -1,6 +1,6 @@
 # Vehicle data coverage
 
-Generated 2026-10-28 by `npm run data:build`. Source: NRCan Fuel Consumption Ratings (https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), downloaded 2026-10-28, cross-checked with US EPA fueleconomy.gov.
+Generated 2026-11-09 by `npm run data:build`. Source: NRCan Fuel Consumption Ratings (https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), downloaded 2026-11-09, cross-checked with US EPA fueleconomy.gov.
 
 **17,569 vehicle versions** from model year 2010 to 2026, 56 makes, 668 model families.
 
@@ -39,9 +39,9 @@ Generated 2026-10-28 by `npm run data:build`. Source: NRCan Fuel Consumption Rat
 
 ## Cross-check against US EPA (fueleconomy.gov)
 
-- Same name found in EPA data: 10,010
-- Close match (similar name, same engine): 6,381
-- No EPA match (often Canada-only names or trims): 1,182
+- Same name found in EPA data: 10,023
+- Close match (similar name, same engine): 6,375
+- No EPA match (often Canada-only names or trims): 1,175
 
 EPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hybrid", (b) tell small from large SUVs in 2010–2014, where NRCan doesn't split them, and (c) fill the drive type when the name doesn't show it. All consumption numbers are NRCan's.
 
