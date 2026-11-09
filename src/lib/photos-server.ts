@@ -56,7 +56,8 @@ function toPhoto(info: ImageInfo, match: Photo["match"]): Photo | null {
 }
 
 /** Photos of a different version of the model: a plug-in or electric photo for a gas/hybrid car, or the reverse. */
-function wrongVersion(title: string, fuelType?: string) {
+function wrongVersion(rawTitle: string, fuelType?: string) {
+  const title = decodeURIComponent(rawTitle).replace(/_/g, " "); // file names use underscores for spaces
   const plugIn = /\bprime\b|plug-?in|\bphev\b|\b4xe\b|e-?hybrid|recharge/i.test(title);
   const electric = /\belectric\b|\bev\b|e-tron|\beq[a-z]?\b/i.test(title);
   if (fuelType === "phev") return electric && !plugIn;
