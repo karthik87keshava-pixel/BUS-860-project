@@ -22,7 +22,10 @@ Do these in order. Each step ends with something to send back to Claude Code. Us
 
 At this point email sign-in (magic link) works.
 
-## Step 3 — Google sign-in
+## Step 3 — Google sign-in (optional — skipped by the team on 2026-11-09)
+
+Creating a Google login client is free; you do **not** need Google Cloud's free trial or billing. The site only shows the Google button once this is switched on in Supabase.
+
 
 1. Go to https://console.cloud.google.com and sign in with the team Google account. Accept the terms.
 2. Top bar → project picker → **New project**. Name `DriveTally`, click **Create**, then select it.
@@ -34,6 +37,13 @@ At this point email sign-in (magic link) works.
 6. In Google Cloud → **Audience**, click **Publish app** so anyone (not just test users) can sign in.
 
 Tell Claude Code when this is done; it will test sign-in, saving and sign-out on the live site.
+
+## Optional — more sign-in emails per hour (free, with Gmail)
+
+Supabase's built-in email sends only a few sign-in emails per hour for the whole project. To lift that:
+1. In the team Gmail account, turn on 2-Step Verification (https://myaccount.google.com/security), then create an app password (https://myaccount.google.com/apppasswords) named `DriveTally`. Keep it private.
+2. Supabase → Authentication → Emails → **SMTP Settings**: enable custom SMTP. Sender email and username = the Gmail address; sender name `DriveTally`; host `smtp.gmail.com`; port `587`; password = the app password. Save.
+3. Supabase → Authentication → **Rate Limits**: raise "Rate limit for sending emails" to about 100 per hour. Save.
 
 ## Free-tier limits worth knowing
 

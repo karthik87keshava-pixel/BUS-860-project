@@ -56,7 +56,7 @@ export function NumberField({
   return (
     <span className={`inline-flex flex-col items-start ${className}`}>
       <span
-        className={`inline-flex items-baseline rounded-md border px-2 py-1 focus-within:border-accent ${changed ? "border-accent bg-accent-soft" : "border-line hover:border-muted"}`}
+        className={`inline-flex items-baseline rounded-md border px-2 py-1 focus-within:border-accent print:border-0 print:bg-transparent print:p-0 ${changed ? "border-accent bg-accent-soft" : "border-line hover:border-muted"}`}
       >
         {prefix && <span className="mr-0.5 text-muted">{prefix}</span>}
         <input
@@ -82,7 +82,7 @@ export function NumberField({
         {suffix && <span className="ml-0.5 text-muted">{suffix}</span>}
       </span>
       {changed && onReset && (
-        <button type="button" onClick={onReset} className="mt-0.5 text-xs text-accent underline">
+        <button type="button" onClick={onReset} className="mt-0.5 text-xs text-accent underline print:hidden">
           reset to default
         </button>
       )}
@@ -121,7 +121,7 @@ export function InfoTip({ children, label = "Where this number comes from" }: { 
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((o) => !o)}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full border border-muted text-[10px] leading-none text-muted hover:border-accent hover:text-accent"
+        className="ml-1 inline-flex h-4 w-4 items-center print:hidden justify-center rounded-full border border-muted text-[10px] leading-none text-muted hover:border-accent hover:text-accent"
       >
         i
       </button>
@@ -158,7 +158,7 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
 
 export function Chevron({ open }: { open: boolean }) {
   return (
-    <svg aria-hidden viewBox="0 0 20 20" className={`h-5 w-5 transition-transform ${open ? "rotate-180" : ""}`}>
+    <svg aria-hidden viewBox="0 0 20 20" className={`h-5 w-5 transition-transform print:hidden ${open ? "rotate-180" : ""}`}>
       <path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );

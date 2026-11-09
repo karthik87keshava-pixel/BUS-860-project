@@ -228,6 +228,20 @@ export function CompareTool() {
             </button>
           </div>
         </div>
+        {/* Printed copies say what the numbers are based on */}
+        <div className="hidden text-xs leading-relaxed print:block">
+          <p suppressHydrationWarning>
+            Printed {new Date().toLocaleDateString("en-CA")} from DriveTally — {typeof window !== "undefined" ? window.location.host : ""}. Estimates only, not
+            financial advice.
+          </p>
+          <p>
+            Your driving: {Math.round(shared.kmMode === "yearly" ? shared.kmPerYear : shared.kmPerDay * shared.daysPerWeek * 52).toLocaleString("en-CA")} km a
+            year, {Math.round(shared.cityShare * 100)}% city, {shared.years} years, {shared.winterMonths} winter months, home charging{" "}
+            {shared.homeCharging ? `yes (${Math.round(shared.homeChargeShare * 100)}% at home)` : "no"}. Gas ${shared.gasRegular.toFixed(2)}/L regular, $
+            {shared.gasPremium.toFixed(2)}/L premium; electricity ${shared.electricityHome.toFixed(3)}/kWh home, ${shared.electricityPublic.toFixed(2)}/kWh
+            public; parking ${shared.parkingPerMonth}/month. Cash purchase price {shared.includeCashPrice ? "included" : "not included"}.
+          </p>
+        </div>
         <p role="status" aria-live="polite" className="no-print mt-2 min-h-5 text-sm text-accent">
           {message}
         </p>

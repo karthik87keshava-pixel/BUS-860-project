@@ -215,7 +215,7 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
         ×
       </button>
       <div className={compact ? "hidden" : ""}>
-      <div className="aspect-[16/9] w-full overflow-hidden rounded-lg bg-soft">
+      <div className="aspect-[16/9] w-full overflow-hidden rounded-lg bg-soft print:aspect-[3/1]">
         {v.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={v.photo.url} alt={`${v.make} ${v.family} (photo of the model, may not show this exact year or trim)`} className="h-full w-full object-cover" loading="lazy" />
@@ -256,7 +256,7 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
               type="button"
               aria-pressed={c.inputs.payment === p}
               onClick={() => c.setPayment(p)}
-              className={`rounded-full px-3 py-1 capitalize ${c.inputs.payment === p ? "bg-fg text-white" : "text-muted hover:text-fg"}`}
+              className={`rounded-full px-3 py-1 capitalize ${c.inputs.payment === p ? "bg-fg text-white" : "text-muted hover:text-fg print:hidden"}`}
             >
               {p}
             </button>
@@ -336,11 +336,22 @@ function buildSections(shared: SharedInputs, units: Units): Section[] {
   const plugIn = (c: Col) => c.v.fuelType === "ev" || c.v.fuelType === "phev";
 
   // An editable money/number cell bound to one column input
+  // Plain names for screen readers, e.g. "Down payment, 2026 Toyota RAV4"
+  const NAMES: Partial<Record<keyof ColumnInputs, string>> = {
+    price: "Price", freightPdi: "Freight and PDI", docFee: "Documentation fee", levies: "A/C tax and tire levy",
+    luxuryTax: "Luxury tax", rebate: "Federal EV rebate", downPayment: "Down payment", tradeIn: "Trade-in value",
+    apr: "Loan rate", loanTermMonths: "Loan term in months", leaseRate: "Lease rate", leaseTermMonths: "Lease term in months",
+    residualPct: "Residual value", kmAllowancePerYear: "Km allowance per year", excessKmRate: "Charge per extra km",
+    acquisitionFee: "Acquisition fee", dispositionFee: "Disposition fee", insurancePerYear: "Insurance per year",
+    maintenancePerKm: "Maintenance per km", winterTireSet: "Winter tires on rims", tireSet: "Replacement tires",
+    repairsPerYear: "Repairs reserve per year", homeChargerCost: "Home charger", phevElectricShare: "Share driven on electricity",
+    retentionYear1: "Value kept after year 1", retentionYearly: "Value kept each later year",
+  };
   const edit = (k: keyof ColumnInputs, opts: Partial<Parameters<typeof NumberField>[0]> = {}) =>
     function EditCell(c: Col) {
       return (
         <NumberField
-          label={String(k)}
+          label={`${NAMES[k] ?? String(k)}, ${c.v.year} ${c.v.make} ${c.v.model}`}
           value={c.inputs[k] as number}
           changed={k in c.overrides}
           onChange={(val) => c.setOverride(k, val as never)}

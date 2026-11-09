@@ -67,6 +67,9 @@ Every assumption, data source and design choice, with the date. Sources for each
 
 - **2026-11-09** — Sign-in links use Supabase's "implicit" flow instead of "PKCE". With PKCE the emailed link only works in the browser that asked for it; opening it in an email app's built-in browser sent users back to the sign-in page. The sign-in page now also explains expired or used links.
 
+- **2026-11-09** — **Google sign-in dropped (team decision).** Google Cloud's sign-up pushed a 90-day free trial that bills afterwards; the team chose not to sign up. (Creating a Google login client is free and doesn't need the trial, so it can be added later in about 10 minutes.) Email sign-in meets the brief. The site shows the Google button only when Google is switched on in Supabase, so nothing visible is broken.
+- **2026-11-09** — Supabase's built-in email service allows only a few sign-in emails per hour per project ("email rate limit exceeded" seen in testing). Free fix if needed for a class demo: send through the team Gmail (custom SMTP, app password) and raise the limit — steps in docs/SETUP.md.
+
 ## Design
 
 - **2026-10-28** — Name "DriveTally" (placeholder; alternatives offered: Kilo, TrueRide AB, CostLane). Accent deep teal `#0F766E` (5.5:1 contrast on white). Inter font. Layout modelled on the feel of a premium car-maker compare page (white space, black text, aligned rows, collapsible sections) without using any of its branding, fonts, photos or text.
@@ -74,6 +77,9 @@ Every assumption, data source and design choice, with the date. Sources for each
 - **2026-10-28** — Share links hold the whole comparison in the URL (compressed), so they open for anyone without sign-in and need no database.
 
 ## Testing
+
+- **2026-11-09** — Accessibility: automated axe-core scan (WCAG 2.0/2.1 A and AA rules) on home, compare (with three vehicles), how-we-calculate, sign-in and my-comparisons: **0 issues**. Every editable number now has a plain screen-reader name (e.g. "Down payment, 2026 Toyota RAV4 AWD LE").
+- **2026-11-09** — Print / PDF: prints landscape with the driving assumptions, date and site address at the top; buttons, info icons and input boxes are hidden; only the chosen payment option shows.
 
 - **2026-10-28** — 17 automated tests in `src/lib/calc/calc.test.ts`, including 8 hand-worked examples (gas and EV; loan, lease, cash; long loan; lease renewal; PHEV energy split). All pass.
 - **2026-10-28** — Browser check (Chromium, desktop 1440 px and iPhone 13 size): add four vehicles via search, switch payment options, edit a price, reset, differences-only, include cash price, share link opened in a fresh private window (all four columns rebuilt), no console errors. Search finds a 2015 car, 2026 cars, EVs (Model Y, IONIQ 5, Silverado EV), PHEVs (Prius Prime, RAV4 plug-in) and pickups (F-150, Tundra).
@@ -83,7 +89,7 @@ Every assumption, data source and design choice, with the date. Sources for each
 - Done: data import, prices for every vehicle, calculation module and tests, all five pages, share link, print view, sign-in and saving code.
 - 2026-11-09: **Live at https://bus-860-project.vercel.app** (Vercel Hobby, deploys from this branch). Browser test against the live site passed (search, four columns, payment switch, edit/reset, differences-only, cash toggle, share link in a private window). Wikimedia photo lookup works from Vercel (e.g. RAV4: CC BY-SA 4.0, credited).
 - 2026-11-09: Team confirmed on the live site: email sign-in works and comparisons save.
-- Still to do: Google sign-in (Step 3 in docs/SETUP.md); Safari and real-phone check by the team. (`docs/SETUP.md`), then live testing of sign-in and saving.
+- Still to do: Safari and real-phone check by the team. Google sign-in skipped by team decision. (`docs/SETUP.md`), then live testing of sign-in and saving.
 - 2026-11-09: Supabase project created (Canada Central). Checked from here: table exists, row-level security refuses saving when signed out, email sign-in on. Price index loaded.
 - Waiting on network access: Wikimedia pre-fetch (works from Vercel).
 - December: more verified prices, photos per generation/year, Safari check, accessibility audit, print polish.
