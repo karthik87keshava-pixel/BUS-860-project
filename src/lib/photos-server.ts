@@ -16,6 +16,8 @@ const MONTH = 60 * 60 * 24 * 30;
 const photos = cached as Record<string, Photo | null>;
 
 const FREE = /^(cc|public domain|pd|cc0)/i;
+// Not the version sold in Canada, or not a regular car: other markets, fleet and race cars
+const NOT_CANADIAN = /market|china|chinese|japan|jdm|india|brazil|australia|europe|uk\b|thailand|indonesia|mexico|russia|police|ranger|taxi|patrol|ambulance|fire|sheriff|rcmp|rally|racing|race car|\brace\b|nascar|modified|tuned|wrap|livery|prototype|concept|camouflage|mule/i;
 // Not a photo of the whole car from outside
 const NOT_EXTERIOR = /interior|dashboard|cockpit|engine|motor\b|badge|logo|emblem|wheel|rim|seat|trunk|boot|cargo|detail|charging|charge port|steering|instrument|gauge|display|screen|headlight|taillight|light|grille|key|plate|cutaway|chassis|crash|wreck|accident|toy|model car|lego/i;
 
@@ -73,7 +75,7 @@ async function yearPhoto(make: string, family: string, year: number): Promise<Ph
     if (!info) continue;
     const title = p.title.replace(/^File:/, "");
     const lower = title.toLowerCase();
-    if (!/\.(jpe?g|png|webp)$/i.test(title) || NOT_EXTERIOR.test(title)) continue;
+    if (!/\.(jpe?g|png|webp)$/i.test(title) || NOT_EXTERIOR.test(title) || NOT_CANADIAN.test(title)) continue;
     if (!familyWords.every((w) => lower.includes(w)) || !lower.includes(make.toLowerCase().split(" ")[0])) continue;
     if (!info.width || info.width / info.height < 1.2) continue; // landscape only
     const years = (title.match(/\b(19[89]\d|20[0-3]\d)\b/g) ?? []).map(Number);
