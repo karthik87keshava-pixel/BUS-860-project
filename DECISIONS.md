@@ -82,7 +82,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 
 - Done: data import, prices for every vehicle, calculation module and tests, all five pages, share link, print view, sign-in and saving code.
 - 2026-11-09: **Live at https://bus-860-project.vercel.app** (Vercel Hobby, deploys from this branch). Browser test against the live site passed (search, four columns, payment switch, edit/reset, differences-only, cash toggle, share link in a private window). Wikimedia photo lookup works from Vercel (e.g. RAV4: CC BY-SA 4.0, credited).
-- Waiting on the team: test email sign-in and saving (needs a real inbox), then Google sign-in (Step 3) (`docs/SETUP.md`), then live testing of sign-in and saving.
+- 2026-11-09: Team confirmed on the live site: email sign-in works and comparisons save.
+- Still to do: Google sign-in (Step 3 in docs/SETUP.md); Safari and real-phone check by the team. (`docs/SETUP.md`), then live testing of sign-in and saving.
 - 2026-11-09: Supabase project created (Canada Central). Checked from here: table exists, row-level security refuses saving when signed out, email sign-in on. Price index loaded.
 - Waiting on network access: Wikimedia pre-fetch (works from Vercel).
 - December: more verified prices, photos per generation/year, Safari check, accessibility audit, print polish.
