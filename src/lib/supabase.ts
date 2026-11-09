@@ -35,7 +35,11 @@ export async function enabledProviders(): Promise<{ email: boolean; google: bool
 
 export function supabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) return null;
-  if (!client) client = createClient(config.url, config.key, { auth: { flowType: "pkce", persistSession: true, detectSessionInUrl: true } });
+  if (!client) client = createClient(config.url, config.key, {
+      // "implicit": the emailed sign-in link works in whichever browser opens it (an email app's built-in
+      // browser, another device). The "pkce" flow only works in the browser that asked for the link.
+      auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true },
+    });
   return client;
 }
 

@@ -65,6 +65,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 
 - **2026-11-09** — Vercel refuses to store the Supabase publishable key under a `NEXT_PUBLIC_` name (it treats it as a leaked secret). The key is public by design, so the site now reads `SUPABASE_URL` and `SUPABASE_PUBLISHABLE` on the server and passes them to the browser through the root layout. The secret key is never used.
 
+- **2026-11-09** — Sign-in links use Supabase's "implicit" flow instead of "PKCE". With PKCE the emailed link only works in the browser that asked for it; opening it in an email app's built-in browser sent users back to the sign-in page. The sign-in page now also explains expired or used links.
+
 ## Design
 
 - **2026-10-28** — Name "DriveTally" (placeholder; alternatives offered: Kilo, TrueRide AB, CostLane). Accent deep teal `#0F766E` (5.5:1 contrast on white). Inter font. Layout modelled on the feel of a premium car-maker compare page (white space, black text, aligned rows, collapsible sections) without using any of its branding, fonts, photos or text.

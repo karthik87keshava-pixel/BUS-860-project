@@ -30,11 +30,36 @@ export function SignInForm() {
       enabledProviders().then((p) => setGoogleOn(p.google));
   }, []);
 
+  // Coming back from an email link or Google: show progress, or the reason it failed
+  const [arriving, setArriving] = useState(false);
+  useEffect(() => {
+    const all = new URLSearchParams(
+      `${window.location.search.slice(1)}&${window.location.hash.slice(1)}`,
+    );
+    const problem = all.get("error_description");
+    if (problem) {
+      setError(
+        /expired|invalid/i.test(problem)
+          ? "That sign-in link has expired or was already used. Please ask for a new one below."
+          : problem.replace(/\+/g, " "),
+      );
+      setStatus("error");
+    } else if (all.get("access_token") || all.get("code")) setArriving(true);
+  }, []);
+
   if (!isSupabaseConfigured()) {
     return (
       <p className="mt-8 rounded-lg border border-line bg-soft p-4 text-sm">
         Sign-in isn&rsquo;t switched on yet. The site owner needs to add the
         Supabase keys (see README). You can still build and share comparisons.
+      </p>
+    );
+  }
+
+  if (arriving && !error && !session) {
+    return (
+      <p className="mt-8 text-sm text-muted" role="status">
+        Signing you in…
       </p>
     );
   }
