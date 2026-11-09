@@ -22,6 +22,17 @@ export function setSupabaseConfig(url?: string, key?: string) {
 
 export const isSupabaseConfigured = () => Boolean(config.url && config.key);
 
+/** Which sign-in methods are switched on in Supabase (so we only show buttons that work). */
+export async function enabledProviders(): Promise<{ email: boolean; google: boolean }> {
+  try {
+    const res = await fetch(`${config.url}/auth/v1/settings`, { headers: { apikey: config.key } });
+    const d = await res.json();
+    return { email: Boolean(d?.external?.email), google: Boolean(d?.external?.google) };
+  } catch {
+    return { email: true, google: false };
+  }
+}
+
 export function supabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) return null;
   if (!client) client = createClient(config.url, config.key, { auth: { flowType: "pkce", persistSession: true, detectSessionInUrl: true } });
