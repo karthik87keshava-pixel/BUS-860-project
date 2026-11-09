@@ -6,13 +6,13 @@ import { useUnits } from "@/lib/units";
 export function SiteFooter() {
   const { units, setUnits } = useUnits();
   return (
-    <footer className="mt-16 border-t border-line bg-soft text-sm text-muted">
+    <footer className="mt-10 border-t border-line bg-soft text-sm text-muted">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 md:grid-cols-[2fr_1fr]">
         <div className="space-y-2">
           <p className="font-semibold text-fg">Estimates only — not financial advice.</p>
           <p>
             Costs are estimates based on public data and the assumptions on the{" "}
-            <Link className="underline hover:text-accent" href="/how-we-calculate">
+            <Link className="text-accent underline underline-offset-2 hover:text-accent-strong" href="/how-we-calculate">
               How we calculate
             </Link>{" "}
             page. Prices, rates, insurance and rebates change; get real quotes before you decide.
@@ -33,7 +33,7 @@ export function SiteFooter() {
                   type="button"
                   aria-pressed={units === u}
                   onClick={() => setUnits(u)}
-                  className={`rounded-full px-3 py-1 ${units === u ? "bg-fg text-white" : "text-muted hover:text-fg"}`}
+                  className={`rounded-full px-3 py-1 ${units === u ? "bg-accent text-white" : "text-muted hover:text-fg"}`}
                 >
                   {u === "km" ? "Kilometres" : "Miles"}
                 </button>

@@ -1,4 +1,4 @@
-# DriveTally (working name)
+# Fairdrive
 
 A website for comparing the full cost of getting and running up to 4 cars in Alberta — loan, lease or cash — over 1 to 8 years.
 Built for the UAlberta EMBA course BUS 860 (Managing Intelligence). Claude Code writes and maintains the code; the team does not need to edit it.

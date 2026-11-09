@@ -1,4 +1,4 @@
-// Hand-worked examples for the DriveTally calculation module.
+// Hand-worked examples for the Fairdrive calculation module.
 // Each test writes out the working in comments so anyone can redo it with a calculator.
 // Round numbers on purpose: 20,000 km a year, 5 years, no winter, no price increases (unless a test says otherwise).
 

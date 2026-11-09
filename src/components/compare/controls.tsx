@@ -56,7 +56,7 @@ export function NumberField({
   return (
     <span className={`inline-flex flex-col items-start ${className}`}>
       <span
-        className={`inline-flex items-baseline rounded-md border px-2 py-1 focus-within:border-accent print:border-0 print:bg-transparent print:p-0 ${changed ? "border-accent bg-accent-soft" : "border-line hover:border-muted"}`}
+        className={`inline-flex items-baseline rounded-md border px-2 py-1 focus-within:border-accent print:border-0 print:bg-transparent print:p-0 ${changed ? "border-accent bg-accent-soft" : "border-zinc-300 bg-zinc-50 hover:border-muted"}`}
       >
         {prefix && <span className="mr-0.5 text-muted">{prefix}</span>}
         <input

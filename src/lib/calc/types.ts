@@ -1,4 +1,4 @@
-// Shared types for the DriveTally calculation module.
+// Shared types for the Fairdrive calculation module.
 // All money is in Canadian dollars, all distances in km, all fuel use in L/100 km or kWh/100 km.
 
 export type FuelType = "gas" | "hybrid" | "phev" | "ev" | "diesel";

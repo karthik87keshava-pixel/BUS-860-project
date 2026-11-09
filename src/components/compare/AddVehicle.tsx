@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { Payment } from "@/lib/calc";
 import { money } from "@/lib/format";
+import { displayModel, specLine } from "@/lib/names";
+import type { Vehicle } from "@/lib/vehicle-types";
 
 interface Hit {
   id: string;
@@ -15,7 +17,6 @@ interface Hit {
   msrp: number;
 }
 
-const FUEL_LABEL: Record<string, string> = { gas: "Gas", hybrid: "Hybrid", phev: "Plug-in hybrid", ev: "Electric", diesel: "Diesel" };
 
 export function AddVehicle({
   open,
@@ -159,12 +160,12 @@ export function AddVehicle({
                   >
                     <span>
                       <span className="font-medium">
-                        {h.year} {h.make} {h.model}
+                        {h.year} {h.make} {displayModel(h.model, h.make)}
                       </span>
-                      <span className="block text-xs text-muted">{h.version.split(" · ").slice(1).join(" · ")}</span>
+                      <span className="block text-xs text-muted">{specLine(h as Pick<Vehicle, "fuelType" | "version">)}</span>
                     </span>
                     <span className="whitespace-nowrap text-xs text-muted">
-                      {FUEL_LABEL[h.fuelType]} · {money(h.msrp)}
+                      {money(h.msrp)}
                     </span>
                   </button>
                 </li>
@@ -205,7 +206,7 @@ export function AddVehicle({
               <option value="">Choose a version</option>
               {versions.map((v) => (
                 <option key={v.id} value={v.id}>
-                  {v.version} — {money(v.msrp)}
+                  {displayModel(v.model, v.make)} · {specLine(v as Pick<Vehicle, "fuelType" | "version">)} — {money(v.msrp)}
                 </option>
               ))}
             </Select>
@@ -216,9 +217,9 @@ export function AddVehicle({
           {picked ? (
             <p className="mb-3 text-sm">
               <span className="font-semibold">
-                {picked.year} {picked.make} {picked.model}
+                {picked.year} {picked.make} {displayModel(picked.model, picked.make)}
               </span>
-              <span className="block text-xs text-muted">{picked.version}</span>
+              <span className="block text-xs text-muted">{specLine(picked as Pick<Vehicle, "fuelType" | "version">)}</span>
             </p>
           ) : (
             <p className="mb-3 text-sm text-muted">Pick a vehicle above.</p>
@@ -228,7 +229,7 @@ export function AddVehicle({
               {(["loan", "lease", "cash"] as const).map((p) => (
                 <label
                   key={p}
-                  className={`cursor-pointer rounded-full border px-4 py-1.5 text-sm capitalize ${payment === p ? "border-fg bg-fg text-white" : "border-line bg-white"}`}
+                  className={`cursor-pointer rounded-full border px-4 py-1.5 text-sm capitalize ${payment === p ? "border-accent bg-accent text-white" : "border-line bg-white"}`}
                 >
                   <input type="radio" name="payment" value={p} checked={payment === p} onChange={() => setPayment(p)} className="sr-only" />
                   {p}
@@ -239,7 +240,7 @@ export function AddVehicle({
               type="button"
               disabled={!picked}
               onClick={add}
-              className="rounded-full bg-fg px-6 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               Add to comparison
             </button>

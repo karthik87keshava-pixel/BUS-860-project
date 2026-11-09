@@ -6,10 +6,24 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SupabaseConfig } from "@/lib/supabase";
 import { UnitsProvider } from "@/lib/units";
 
+const TAGLINE = "The fair cost of every kilometre.";
+const DESCRIPTION =
+  "Compare what it really costs to buy, lease or finance up to four cars in Alberta: price, GST, payments, fuel or electricity, insurance, maintenance and resale.";
+
 export const metadata: Metadata = {
-  title: { default: "DriveTally — what a car really costs in Alberta", template: "%s · DriveTally" },
-  description:
-    "Compare the full cost of buying, leasing or financing up to four cars in Alberta: price, GST, payments, fuel or electricity, insurance, maintenance and resale.",
+  metadataBase: new URL("https://bus-860-project.vercel.app"),
+  title: { default: `Fairdrive — ${TAGLINE}`, template: "%s · Fairdrive" },
+  description: `${TAGLINE} ${DESCRIPTION}`,
+  applicationName: "Fairdrive",
+  openGraph: {
+    type: "website",
+    siteName: "Fairdrive",
+    title: `Fairdrive — ${TAGLINE}`,
+    description: DESCRIPTION,
+    url: "/",
+    locale: "en_CA",
+  },
+  twitter: { card: "summary", title: `Fairdrive — ${TAGLINE}`, description: DESCRIPTION },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#ffffff" };

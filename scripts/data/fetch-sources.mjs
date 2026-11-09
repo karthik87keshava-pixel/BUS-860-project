@@ -21,7 +21,7 @@ const WANTED = [/battery-electric/i, /plug-in hybrid/i, /^\d{4} Fuel Consumption
 
 async function getJson(url) {
   for (let attempt = 1; attempt <= 4; attempt++) {
-    const res = await fetch(url, { headers: { "User-Agent": "DriveTally-data-refresh (UAlberta BUS 860 project)" } });
+    const res = await fetch(url, { headers: { "User-Agent": "Fairdrive-data-refresh (UAlberta BUS 860 project)" } });
     if (res.ok) return res.json();
     if (attempt === 4) throw new Error(`${res.status} for ${url}`);
     await new Promise((r) => setTimeout(r, 2000 * attempt));

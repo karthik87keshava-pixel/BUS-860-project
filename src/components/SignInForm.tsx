@@ -147,7 +147,7 @@ export function SignInForm() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="w-full rounded-full bg-fg px-6 py-3 font-medium text-white hover:bg-accent disabled:opacity-50"
+            className="w-full rounded-full bg-accent px-6 py-3 font-medium text-white hover:bg-accent-strong disabled:opacity-50"
           >
             {status === "sending" ? "Sending…" : "Email me a sign-in link"}
           </button>

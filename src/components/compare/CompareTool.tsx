@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { calculateColumn, defaultShared, lowestCost, resolveColumn, type ColumnInputs, type Payment, type SharedInputs } from "@/lib/calc";
+import { displayName, shortNames } from "@/lib/names";
 import { decodeState, emptyState, encodeState, MAX_COLUMNS, type ComparisonState } from "@/lib/state";
+import { summarySentence } from "@/lib/summary";
 import { supabase, isSupabaseConfigured, useSession } from "@/lib/supabase";
 import type { Photo, Vehicle } from "@/lib/vehicle-types";
 import { AddVehicle } from "./AddVehicle";
@@ -14,7 +16,7 @@ import { SharedPanel } from "./SharedPanel";
 
 type VehicleWithPhoto = Vehicle & { photo?: Photo | null };
 
-const DRAFT_KEY = "drivetally-draft";
+const DRAFT_KEY = "fairdrive-draft";
 const CURRENT_YEAR = 2026;
 
 export function CompareTool() {
@@ -177,7 +179,7 @@ export function CompareTool() {
       router.push(`/sign-in?next=${encodeURIComponent(window.location.pathname + window.location.search)}`);
       return;
     }
-    const defaultName = cols.map((c) => `${c.v.year} ${c.v.make} ${c.v.family}`).join(" vs ") || "My comparison";
+    const defaultName = cols.map((c) => displayName(c.v)).join(" vs ") || "My comparison";
     if (savedId) {
       const { error } = await sb.from("comparisons").update({ state, name: savedName || defaultName }).eq("id", savedId);
       setMessage(error ? `Couldn't save: ${error.message}` : "Saved.");
@@ -204,7 +206,13 @@ export function CompareTool() {
       return s;
     });
 
-  const names = cols.map((c, i) => `${i + 1}. ${c.v.year} ${c.v.make} ${c.v.family} (${c.inputs.payment})`);
+  const short = shortNames(cols.map((c) => ({ v: c.v, payment: c.inputs.payment })));
+  const names = cols.map((c, i) => `${i + 1}. ${c.v.year} ${short[i]} (${c.inputs.payment})`);
+  const summary = summarySentence(
+    cols.map((c, i) => ({ fullName: displayName(c.v), shortName: short[i], result: c.result })),
+    shared.years,
+    lowest?.basis ?? "net",
+  );
 
   return (
     <div>
@@ -223,7 +231,7 @@ export function CompareTool() {
             <button type="button" onClick={() => window.print()} disabled={!cols.length} className="rounded-full border border-line px-4 py-2 hover:border-fg disabled:opacity-40">
               Print / PDF
             </button>
-            <button type="button" onClick={save} disabled={!cols.length} className="rounded-full bg-fg px-5 py-2 font-medium text-white hover:bg-accent disabled:opacity-40">
+            <button type="button" onClick={save} disabled={!cols.length} className="rounded-full bg-accent px-5 py-2 font-medium text-white hover:bg-accent-strong disabled:opacity-40">
               {session ? (savedId ? "Save changes" : "Save") : "Sign in to save"}
             </button>
           </div>
@@ -231,7 +239,7 @@ export function CompareTool() {
         {/* Printed copies say what the numbers are based on */}
         <div className="hidden text-xs leading-relaxed print:block">
           <p suppressHydrationWarning>
-            Printed {new Date().toLocaleDateString("en-CA")} from DriveTally — {typeof window !== "undefined" ? window.location.host : ""}. Estimates only, not
+            Printed {new Date().toLocaleDateString("en-CA")} from Fairdrive — {typeof window !== "undefined" ? window.location.host : ""}. Estimates only, not
             financial advice.
           </p>
           <p>
@@ -255,12 +263,21 @@ export function CompareTool() {
         {loading && <span className="text-sm text-muted">Loading vehicles…</span>}
       </div>
 
+      {/* Plain-English summary, based on net cost after resale (the same number the "Lowest cost" badge uses) */}
+      {summary && (
+        <div className="mx-auto max-w-7xl px-4 pb-2 sm:px-6">
+          <p aria-live="polite" className="border-l-4 border-accent pl-4 text-lg font-medium leading-snug sm:text-xl">
+            {summary}
+          </p>
+        </div>
+      )}
+
       <CompareGrid cols={cols} shared={shared} lowest={lowest} onAdd={() => setAdding(true)} showDifferences={differences} />
 
-      {cols.length > 0 && <CostChart names={names} cumulative={cols.map((c) => c.result.cumulative)} />}
+      {cols.length > 0 && <CostChart names={names} labels={short} cumulative={cols.map((c) => c.result.cumulative)} />}
 
       <p className="mx-auto max-w-7xl px-4 pt-8 text-xs text-muted sm:px-6">
-        How every number is worked out: <Link href="/how-we-calculate" className="underline">How we calculate</Link>.
+        How every number is worked out: <Link href="/how-we-calculate" className="text-accent underline underline-offset-2">How we calculate</Link>.
       </p>
 
       <AddVehicle open={adding} onClose={() => setAdding(false)} onAdd={addVehicle} />

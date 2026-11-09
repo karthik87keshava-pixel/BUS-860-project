@@ -1,4 +1,4 @@
--- DriveTally database setup. Paste this whole file into Supabase → SQL Editor → Run (once).
+-- Fairdrive database setup. Paste this whole file into Supabase → SQL Editor → Run (once).
 -- Saved comparisons: one row per comparison, owned by the signed-in user.
 
 create table if not exists public.comparisons (

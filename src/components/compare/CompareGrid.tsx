@@ -12,6 +12,7 @@ import {
   type SharedInputs,
 } from "@/lib/calc";
 import { electricUse, fuelUse, int, money, pct, perDistance } from "@/lib/format";
+import { displayName, shortNames, specLine } from "@/lib/names";
 import { MAX_COLUMNS } from "@/lib/state";
 import { KM_PER_MI, useUnits, type Units } from "@/lib/units";
 import type { Photo, Vehicle } from "@/lib/vehicle-types";
@@ -45,9 +46,8 @@ interface Section {
   id: string;
   title: string;
   rows: Row[];
+  subtotal: Row; // shown even when the section is collapsed
 }
-
-const FUEL_LABEL: Record<string, string> = { gas: "Gas", hybrid: "Hybrid", phev: "Plug-in hybrid", ev: "Electric", diesel: "Diesel" };
 
 export function CompareGrid({
   cols,
@@ -63,17 +63,30 @@ export function CompareGrid({
   showDifferences: boolean;
 }) {
   const { units } = useUnits();
-  const [closed, setClosed] = useState<Record<string, boolean>>({});
+  // Sections start collapsed (only their subtotal shows); "Expand all" opens every section
+  const [open, setOpen] = useState<Record<string, boolean>>({});
   const headRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
 
   // Once the page has scrolled past the top of the column headers, the sticky header shrinks to name + payment option
+  // Hysteresis: when the header shrinks, the browser keeps the content in place by scrolling up by the height it lost,
+  // so the header only grows back once the page is scrolled further up than that (otherwise the two would flicker).
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-    const check = () => setCompact(el.getBoundingClientRect().top < -40);
+    let isCompact = false;
+    let fullHeight = 0;
+    const check = () => {
+      const top = el.getBoundingClientRect().top;
+      const header = el.nextElementSibling as HTMLElement | null;
+      if (!isCompact && header) fullHeight = header.offsetHeight;
+      const growBackAt = Math.max(300, fullHeight - 60);
+      if (!isCompact && top < -40) isCompact = true;
+      else if (isCompact && top > growBackAt) isCompact = false;
+      setCompact(isCompact);
+    };
     check();
     window.addEventListener("scroll", check, { passive: true });
     window.addEventListener("resize", check);
@@ -165,7 +178,7 @@ export function CompareGrid({
               <ColumnHeader key={c.key} c={c} compact={compact} isLowest={lowest?.index === i && cols.length > 1} basis={lowest?.basis} />
             ))}
             {cols.length < MAX_COLUMNS && (
-              <div className={`snap-start px-2 lg:px-3 ${compact ? "py-2" : "py-4"}`}>
+              <div className={`snap-start pr-3 ${compact ? "py-2" : "py-4"}`}>
                 <button
                   type="button"
                   onClick={onAdd}
@@ -188,45 +201,44 @@ export function CompareGrid({
           <div className="w-max min-w-full lg:w-auto">
             {/* Summary block, always open */}
             <SummaryRows cols={cols} gridClass={gridClass} gridStyle={gridStyle} units={units} years={years} lowest={lowest} />
+            <div className="no-print sticky left-0 flex w-[calc(100vw-2rem)] items-center justify-between border-t border-fg py-3 sm:w-auto">
+              <p className="text-xs text-muted">
+                <span className="mr-1 inline-block rounded-md border border-zinc-300 bg-zinc-50 px-1.5 align-middle">$ 0</span> boxes are numbers you can change; plain
+                numbers are calculated.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  const allOpen = sections.every((sec) => open[sec.id]);
+                  setOpen(Object.fromEntries(sections.map((sec) => [sec.id, !allOpen])));
+                }}
+                className="whitespace-nowrap text-sm font-medium text-accent underline-offset-2 hover:underline"
+              >
+                {sections.every((sec) => open[sec.id]) ? "Collapse all" : "Expand all"}
+              </button>
+            </div>
             {sections.map((s) => {
               const rows = s.rows.filter(visible);
-              if (!rows.length) return null;
-              const isOpen = !closed[s.id];
+              const isOpen = Boolean(open[s.id]);
               return (
-                <section key={s.id} aria-labelledby={`sec-${s.id}`} className="border-t border-fg">
+                <section key={s.id} aria-labelledby={`sec-${s.id}`} className="border-t border-line first-of-type:border-fg">
                   <h3 className="sticky left-0 w-[calc(100vw-2rem)] sm:w-auto">
                     <button
                       id={`sec-${s.id}`}
                       type="button"
                       aria-expanded={isOpen}
-                      onClick={() => setClosed((c) => ({ ...c, [s.id]: isOpen }))}
-                      className="flex w-full items-center justify-between py-4 text-left text-lg font-semibold"
+                      onClick={() => setOpen((o) => ({ ...o, [s.id]: !isOpen }))}
+                      className="flex w-full items-center justify-between py-4 text-left text-lg font-semibold hover:text-accent"
                     >
-                      {s.title}
+                      <span>
+                        {s.title}
+                        {!isOpen && rows.length > 0 && <span className="ml-2 text-xs font-normal text-muted">{rows.length} rows — show</span>}
+                      </span>
                       <Chevron open={isOpen} />
                     </button>
                   </h3>
-                  {isOpen &&
-                    rows.map((r) => (
-                      <div key={r.id} className="border-t border-line">
-                        <div className="sticky left-0 w-[calc(100vw-2rem)] px-2 pt-3 text-xs font-medium text-muted sm:w-auto lg:hidden">
-                          {r.label}
-                          {r.tip && <InfoTip>{r.tip}</InfoTip>}
-                        </div>
-                        <div className={gridClass} style={gridStyle}>
-                          <div className="hidden py-3 pr-4 text-sm lg:block">
-                            {r.label}
-                            {r.tip && <InfoTip>{r.tip}</InfoTip>}
-                          </div>
-                          {cols.map((c) => (
-                            <div key={c.key} className={`snap-start px-2 py-3 text-sm lg:px-3 ${r.strong ? "font-semibold" : ""}`}>
-                              {!r.applies || r.applies(c) ? r.cell(c) : <span className="text-muted">—</span>}
-                            </div>
-                          ))}
-                          {cols.length < MAX_COLUMNS && <div />}
-                        </div>
-                      </div>
-                    ))}
+                  {isOpen && rows.map((r) => <GridRow key={r.id} r={r} cols={cols} gridClass={gridClass} gridStyle={gridStyle} />)}
+                  <GridRow r={s.subtotal} cols={cols} gridClass={gridClass} gridStyle={gridStyle} subtotal />
                 </section>
               );
             })}
@@ -237,16 +249,39 @@ export function CompareGrid({
   );
 }
 
+function GridRow({ r, cols, gridClass, gridStyle, subtotal }: { r: Row; cols: Col[]; gridClass: string; gridStyle: React.CSSProperties; subtotal?: boolean }) {
+  return (
+    <div className={subtotal ? "border-t border-line bg-soft font-semibold" : "border-t border-line"}>
+      <div className="sticky left-0 w-[calc(100vw-2rem)] pr-2 pt-3 text-xs font-medium text-muted sm:w-auto lg:hidden">
+        {r.label}
+        {r.tip && <InfoTip>{r.tip}</InfoTip>}
+      </div>
+      <div className={gridClass} style={gridStyle}>
+        <div className="hidden py-3 pr-4 text-sm lg:block">
+          {r.label}
+          {r.tip && <InfoTip>{r.tip}</InfoTip>}
+        </div>
+        {cols.map((c) => (
+          <div key={c.key} className={`snap-start py-3 pr-3 text-sm ${r.strong ? "font-semibold" : ""}`}>
+            {!r.applies || r.applies(c) ? r.cell(c) : <span className="font-normal text-muted">—</span>}
+          </div>
+        ))}
+        {cols.length < MAX_COLUMNS && <div />}
+      </div>
+    </div>
+  );
+}
+
 function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boolean; basis?: "net" | "running"; compact: boolean }) {
   const { v } = c;
-  const name = `${v.year} ${v.make} ${v.model}`;
+  const name = displayName(v);
   return (
-    <div className={`relative snap-start px-2 lg:px-3 ${compact ? "py-2" : "pb-4 pt-4"}`}>
+    <div className={`relative snap-start pr-3 ${compact ? "py-2" : "pb-4 pt-4"}`}>
       <button
         type="button"
         onClick={c.remove}
         aria-label={`Remove ${name}`}
-        className="no-print absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-xl leading-none text-muted shadow-sm hover:text-fg"
+        className="no-print absolute right-4 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-xl leading-none text-muted shadow-sm hover:text-fg"
       >
         ×
       </button>
@@ -282,7 +317,7 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
         {name}
       </h2>
       <p className={`text-xs text-muted ${compact ? "hidden" : ""}`}>
-        {FUEL_LABEL[v.fuelType]} · {v.version.replace(" (US EPA)", "").split(" · ").slice(1).join(" · ")}
+        {specLine(v)}
       </p>
       {v.ratingSource === "EPA" && (
         <p className={`text-[11px] text-muted ${compact ? "hidden" : ""}`}>
@@ -298,13 +333,16 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
               type="button"
               aria-pressed={c.inputs.payment === p}
               onClick={() => c.setPayment(p)}
-              className={`rounded-full px-3 py-1 capitalize ${c.inputs.payment === p ? "bg-fg text-white" : "text-muted hover:text-fg print:hidden"}`}
+              className={`rounded-full px-3 py-1 capitalize ${c.inputs.payment === p ? "bg-accent text-white" : "text-muted hover:text-fg print:hidden"}`}
             >
               {p}
             </button>
           ))}
         </div>
-        <span className="text-xs text-muted">{c.inputs.condition === "new" ? "New" : "Used"}</span>
+        {/* A label, not a button */}
+        <span className="cursor-default select-none rounded-full bg-zinc-200 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-zinc-700">
+          {c.inputs.condition === "new" ? "New" : "Used"}
+        </span>
         {isLowest && (
           <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-white" title={basis === "running" ? "Lowest running costs" : "Lowest net cost"}>
             Lowest cost
@@ -330,31 +368,48 @@ function SummaryRows({
   years: number;
   lowest: { index: number; basis: "net" | "running" } | null;
 }) {
-  const rows: { label: string; val: (c: Col) => React.ReactNode; big?: boolean }[] = [
+  const names = shortNames(cols.map((c) => ({ v: c.v, payment: c.inputs.payment })));
+  const metric = (c: Col) => (lowest?.basis === "running" ? c.result.runningCost : c.result.netCost);
+  const best = lowest && cols.length > 1 ? cols[lowest.index] : null;
+  const rows: { label: string; val: (c: Col) => React.ReactNode }[] = [
     {
-      label: `Total cost, ${years} years`,
-      big: true,
+      label: "Net cost after resale",
       val: (c) => (
         <>
-          <span className="text-2xl font-semibold tracking-tight">{money(c.result.totalCost)}</span>
-          {c.result.priceExcluded && <span className="mt-1 block text-xs font-normal text-warn">Purchase price not included — compare running costs for like-for-like.</span>}
+          <span className="text-2xl font-bold tracking-tight">{money(c.result.netCost)}</span>
+          {c.result.priceExcluded ? (
+            <span className="mt-1 block text-xs font-normal text-warn">Purchase price not included — compare running costs for like-for-like.</span>
+          ) : (
+            !c.result.resaleValue && <span className="mt-1 block text-xs font-normal text-muted">No resale (lease)</span>
+          )}
+          {best === c && (
+            <ul className="mt-1 space-y-0.5 text-xs font-medium text-accent">
+              {cols.map((o, j) =>
+                o === c ? null : (
+                  <li key={o.key}>
+                    {money(metric(o) - metric(c))} less {lowest?.basis === "running" ? "to run " : ""}than {names[j]}
+                  </li>
+                ),
+              )}
+            </ul>
+          )}
         </>
       ),
     },
-    { label: "Net cost after resale", val: (c) => (c.result.resaleValue ? money(c.result.netCost) : <span className="text-muted">{money(c.result.netCost)} (no resale)</span>) },
+    { label: `Total cost, ${years} years (before resale)`, val: (c) => <span className="text-muted">{money(c.result.totalCost)}</span> },
     { label: "Per month", val: (c) => money(c.result.perMonth) },
     { label: units === "km" ? "Per kilometre" : "Per mile", val: (c) => perDistance(c.result.perKm, units) },
-    { label: "Running costs only", val: (c) => <span className="font-semibold">{money(c.result.runningCost)}</span> },
+    { label: "Running costs only", val: (c) => money(c.result.runningCost) },
   ];
   return (
     <div className="pb-4 pt-2">
       {rows.map((r) => (
         <div key={r.label} className="border-t border-line first:border-t-0">
-          <div className="sticky left-0 w-[calc(100vw-2rem)] px-2 pt-3 text-xs font-medium text-muted sm:w-auto lg:hidden">{r.label}</div>
+          <div className="sticky left-0 w-[calc(100vw-2rem)] pr-2 pt-3 text-xs font-medium text-muted sm:w-auto lg:hidden">{r.label}</div>
           <div className={gridClass} style={gridStyle}>
             <div className="hidden py-3 pr-4 text-sm lg:block">{r.label}</div>
             {cols.map((c) => (
-              <div key={c.key} className="snap-start px-2 py-3 text-sm lg:px-3">
+              <div key={c.key} className="snap-start py-3 pr-3 text-sm">
                 {r.val(c)}
               </div>
             ))}
@@ -407,7 +462,7 @@ function buildSections(shared: SharedInputs, units: Units): Section[] {
   const resultMoney = (k: keyof ColumnResult) => ({ cell: (c: Col) => money(c.result[k] as number), text: (c: Col) => money(c.result[k] as number) });
   const sum = (c: Col, k: keyof ColumnResult["years"][number]) => c.result.years.reduce((a, y) => a + (y[k] as number), 0);
 
-  return [
+  const list: Omit<Section, "subtotal">[] = [
     {
       id: "getting",
       title: "Getting the car",
@@ -424,7 +479,7 @@ function buildSections(shared: SharedInputs, units: Units): Section[] {
                 aria-label="New or used"
                 value={c.inputs.condition}
                 onChange={(e) => c.setOverride("condition", e.target.value as "new" | "used")}
-                className="rounded-md border border-line bg-white px-2 py-1"
+                className="rounded-md border border-zinc-300 bg-zinc-50 px-2 py-1"
               >
                 <option value="new">New</option>
                 <option value="used">Used</option>
@@ -518,7 +573,7 @@ function buildSections(shared: SharedInputs, units: Units): Section[] {
           ),
           text: (c) => money(c.result.monthlyPayment),
         },
-        { id: "payments", label: `Payments made in ${shared.years} years`, applies: is("loan", "lease"), ...resultMoney("paymentsInPeriod") },
+        { id: "payments", label: `Lease payments made in ${shared.years} years`, applies: is("lease"), ...resultMoney("paymentsInPeriod") },
         { id: "interest", label: "Interest paid", applies: is("loan"), ...resultMoney("interestPaid") },
         { id: "leaseFees", label: "Lease fees (incl. GST)", applies: is("lease"), ...resultMoney("leaseFees") },
         { id: "excess", label: units === "km" ? "Extra km charges" : "Extra mileage charges", applies: is("lease"), ...resultMoney("excessKmCharge") },
@@ -638,6 +693,37 @@ function buildSections(shared: SharedInputs, units: Units): Section[] {
       ],
     },
   ];
+
+  // Subtotal rows: sums of results the calculation already produced (shown even when a section is collapsed)
+  const subtotals: Record<string, Row> = {
+    getting: {
+      id: "sub-getting",
+      label: "Paid up front",
+      tip: "Loan: down payment and trade-in. Lease: down payment with GST. Cash: the full price with fees and GST, less any rebate.",
+      cell: (c) =>
+        c.result.priceExcluded ? (
+          <span className="font-normal text-muted">Not counted (cash price left out)</span>
+        ) : (
+          money(c.result.upfront + (c.inputs.payment === "loan" ? c.result.tradeIn : 0))
+        ),
+      text: (c) => String(c.result.upfront),
+    },
+    financing: {
+      id: "sub-financing",
+      label: `Payments in ${shared.years} years`,
+      tip: "Loan: monthly payments made in the period (interest included). Lease: payments, later down payments and end-of-lease charges.",
+      cell: (c) =>
+        c.inputs.payment === "cash" ? (
+          <span className="font-normal text-muted">None</span>
+        ) : (
+          money(c.inputs.payment === "loan" ? c.result.paymentsInPeriod : c.result.ownershipCost - c.result.upfront)
+        ),
+      text: (c) => String(c.result.paymentsInPeriod),
+    },
+    running: { id: "sub-running", label: "Running costs total", cell: (c) => money(c.result.runningCost), text: (c) => String(c.result.runningCost) },
+    end: { id: "sub-end", label: "Net cost after resale", cell: (c) => money(c.result.netCost), text: (c) => String(c.result.netCost) },
+  };
+  return list.map((sec) => ({ ...sec, rows: sec.rows.filter((r) => r.id !== "runningTotal" && r.id !== "net"), subtotal: subtotals[sec.id] }));
 }
 
 function Total({ total, first }: { total: number; first?: number }) {

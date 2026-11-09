@@ -10,7 +10,7 @@ import type { Photo } from "./vehicle-types";
 
 const WIKIPEDIA = "https://en.wikipedia.org/w/api.php";
 const COMMONS = "https://commons.wikimedia.org/w/api.php";
-const HEADERS = { "User-Agent": "DriveTally/1.0 (University of Alberta BUS 860 student project; https://github.com/karthik87keshava-pixel/BUS-860-project)" };
+const HEADERS = { "User-Agent": "Fairdrive/1.0 (University of Alberta BUS 860 student project; https://github.com/karthik87keshava-pixel/BUS-860-project)" };
 const MONTH = 60 * 60 * 24 * 30;
 
 const photos = cached as Record<string, Photo | null>;
@@ -55,14 +55,26 @@ function toPhoto(info: ImageInfo, match: Photo["match"]): Photo | null {
   };
 }
 
-/** A Commons photo whose file name has this model year (±1), make and model. */
-async function yearPhoto(make: string, family: string, year: number): Promise<Photo | null> {
+/** Photos of a different version of the model: a plug-in or electric photo for a gas/hybrid car, or the reverse. */
+function wrongVersion(title: string, fuelType?: string) {
+  const plugIn = /\bprime\b|plug-?in|\bphev\b|\b4xe\b|e-?hybrid|recharge/i.test(title);
+  const electric = /\belectric\b|\bev\b|e-tron|\beq[a-z]?\b/i.test(title);
+  if (fuelType === "phev") return electric && !plugIn;
+  if (fuelType === "ev") return plugIn;
+  return plugIn || electric; // gas, hybrid, diesel
+}
+
+/**
+ * A Commons photo of this make and model whose file name has a model year within `maxGap` of the vehicle's,
+ * the closest year winning. With `withYear`, the search itself asks for that year.
+ */
+async function yearPhoto(make: string, family: string, year: number, fuelType?: string, maxGap = 1, withYear = true): Promise<Photo | null> {
   const familyWords = family.toLowerCase().split(/\s+/);
   const d = await api(COMMONS, {
     action: "query",
     generator: "search",
     gsrnamespace: "6",
-    gsrsearch: `intitle:${year} intitle:"${family}" ${make}`,
+    gsrsearch: withYear ? `intitle:${year} intitle:"${family}" ${make}` : `intitle:"${family}" ${make}`,
     gsrlimit: "40",
     prop: "imageinfo",
     iiprop: "url|extmetadata|size",
@@ -75,31 +87,34 @@ async function yearPhoto(make: string, family: string, year: number): Promise<Ph
     if (!info) continue;
     const title = p.title.replace(/^File:/, "");
     const lower = title.toLowerCase();
-    if (!/\.(jpe?g|png|webp)$/i.test(title) || NOT_EXTERIOR.test(title) || NOT_CANADIAN.test(title)) continue;
+    if (!/\.(jpe?g|png|webp)$/i.test(title) || NOT_EXTERIOR.test(title) || NOT_CANADIAN.test(title) || wrongVersion(title, fuelType)) continue;
     if (!familyWords.every((w) => lower.includes(w)) || !lower.includes(make.toLowerCase().split(" ")[0])) continue;
     if (!info.width || info.width / info.height < 1.2) continue; // landscape only
     const years = (title.match(/\b(19[89]\d|20[0-3]\d)\b/g) ?? []).map(Number);
     const gap = Math.min(...years.map((y) => Math.abs(y - year)));
-    if (!(gap <= 1)) continue;
-    let score = gap === 0 ? 3 : 1;
+    if (!(gap <= maxGap)) continue;
+    let score = gap === 0 ? 3 : gap === 1 ? 1 : -gap;
     if (/front/i.test(title)) score += 2;
     if (/\b(left|right|side|3\/4|quarter)\b/i.test(title)) score += 1;
     if (/\brear\b|\bback\b/i.test(title)) score -= 2;
     if (!toPhoto(info, "year")) continue; // licence check
     if (!best || score > best.score) best = { score, info };
   }
-  return best ? toPhoto(best.info, "year") : null;
+  if (!best) return null;
+  const bestYears = (best.info.descriptionurl.match(/\b(19[89]\d|20[0-3]\d)\b/g) ?? []).map(Number);
+  const close = bestYears.some((y) => Math.abs(y - year) <= 1);
+  return toPhoto(best.info, close ? "year" : "model");
 }
 
-/** The model's general photo: the lead image of its Wikipedia article. */
-async function modelPhoto(make: string, family: string): Promise<Photo | null> {
+/** The model's general photo: the lead image of its Wikipedia article (skipped if it shows another version). */
+async function modelPhoto(make: string, family: string, fuelType?: string): Promise<Photo | null> {
   let d = await api(WIKIPEDIA, { action: "query", redirects: "1", prop: "pageimages", piprop: "name", titles: `${make} ${family}` });
   let file: string | undefined = d?.query?.pages?.[0]?.pageimage;
   if (!file) {
     d = await api(WIKIPEDIA, { action: "query", generator: "search", gsrsearch: `${make} ${family} car`, gsrlimit: "1", prop: "pageimages", piprop: "name" });
     file = d?.query?.pages?.[0]?.pageimage;
   }
-  if (!file) return null;
+  if (!file || wrongVersion(file, fuelType)) return null;
   d = await api(WIKIPEDIA, { action: "query", prop: "imageinfo", iiprop: "url|extmetadata|size", iiurlwidth: "640", titles: `File:${file}` });
   const info = d?.query?.pages?.[0]?.imageinfo?.[0];
   return info ? toPhoto(info, "model") : null;
@@ -109,19 +124,20 @@ export function photoKey(make: string, family: string) {
   return `${make}|${family}`;
 }
 
-export async function findPhoto(make: string, family: string, year?: number): Promise<Photo | null> {
+export async function findPhoto(make: string, family: string, year?: number, fuelType?: string): Promise<Photo | null> {
   const key = photoKey(make, family);
   try {
     if (year) {
-      const p = await yearPhoto(make, family, year);
+      // Same year (±1); else the nearest year of the same version within 6 years
+      const p = (await yearPhoto(make, family, year, fuelType)) ?? (await yearPhoto(make, family, year, fuelType, 6, false));
       if (p) return p;
     }
   } catch (e) {
     console.warn(`[photos] year lookup failed for ${key} ${year}: ${(e as Error).message}`);
   }
-  if (key in photos) return photos[key] ? { ...photos[key]!, match: "model" } : null;
+  if (key in photos && photos[key] && !wrongVersion(photos[key]!.pageUrl, fuelType)) return { ...photos[key]!, match: "model" };
   try {
-    const p = await modelPhoto(make, family);
+    const p = await modelPhoto(make, family, fuelType);
     if (!p) console.warn(`[photos] no free photo for ${key}`);
     return p;
   } catch (e) {

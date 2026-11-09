@@ -52,7 +52,7 @@ Model the layout and feel on the Mercedes-Benz Canada compare page (https://www.
 - **Empty column slot** with a large "+ Add vehicle" button until 4 columns are filled.
 - **Collapsible sections** with a chevron, and every row lined up across all columns so numbers are easy to compare.
 - A **"Show differences only"** toggle that hides rows where all columns match.
-- Neutral palette (white, black, greys) with one accent colour. Use a free font such as Inter. Suggest a site name and accent colour; use "DriveTally" as a placeholder until we pick.
+- Neutral palette (white, black, greys) with one accent colour. Use a free font such as Inter. Suggest a site name and accent colour; use a placeholder name until we pick. (Team chose "Fairdrive" on 2026-11-09.)
 - Desktop: 4 columns side by side. Phone: columns scroll sideways with snap, header stays sticky.
 - **Units toggle hidden at the bottom of the page** (in the footer): km ↔ miles. In miles mode show mpg / miles per kWh too. All maths stays in metric internally.
 

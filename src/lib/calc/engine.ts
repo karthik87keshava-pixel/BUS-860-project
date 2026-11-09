@@ -1,4 +1,4 @@
-// The DriveTally cost engine. Pure functions only: same inputs, same answer, no website code.
+// The Fairdrive cost engine. Pure functions only: same inputs, same answer, no website code.
 // Every formula here is shown in plain English on the "How we calculate" page.
 
 import type { ColumnInputs, ColumnResult, SharedInputs, VehicleFacts, YearRow } from "./types";

@@ -1,4 +1,4 @@
-# DriveTally — project plan (step 1 of 7)
+# Fairdrive — project plan (step 1 of 7)
 
 Status: **approved 2026-10-28** (team decisions on approval are in DECISIONS.md).
 Full brief: [`BUILD_PROMPT.md`](BUILD_PROMPT.md).
@@ -48,7 +48,7 @@ README.md            plain-English "how to run, update, redeploy"
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────────────┐
-│ DriveTally                              Compare   How we calculate   My comparisons  [Sign in] │
+│ Fairdrive                              Compare   How we calculate   My comparisons  [Sign in] │
 ├───────────────────────────────────────────────────────────────────────────────────────┤
 │ YOUR DRIVING  (shared by all columns)                                       [ Edit ▾ ] │
 │ 40 km/day · 5 days/wk · 55% city · 5 years · 5 winter months · home charging: yes      │
@@ -103,7 +103,7 @@ README.md            plain-English "how to run, update, redeploy"
 2. **"Lowest cost" badge** goes on the lowest **Net cost**. With a cash column whose price is excluded, the badge compares **running costs only** across all columns instead, so it's never unfair. A note says which basis is used.
 3. **Lease term shorter than the ownership period** (e.g. 4-year lease, 5-year period): I'll assume the user signs a similar new lease for the remaining months, and show a note. If the term is longer, only payments inside the period are counted (no early-exit penalty).
 4. **Model years:** I'll import every year NRCan publishes (back to 1995), but the year picker starts at 2010 by default with a "show older" link, to keep it tidy.
-5. **Site name:** keep **DriveTally**, or consider **Kilo** ("what every kilometre costs"), **TrueRide AB**, or **CostLane**. **Accent colour:** deep teal `#0F766E` — strong contrast on white (passes accessibility rules), not tied to any car brand, and different from the black/silver feel of the reference page.
+5. **Site name:** keep **Fairdrive**, or consider **Kilo** ("what every kilometre costs"), **TrueRide AB**, or **CostLane**. **Accent colour:** deep teal `#0F766E` — strong contrast on white (passes accessibility rules), not tied to any car brand, and different from the black/silver feel of the reference page.
 
 ## 8. Risks and honest expectations
 

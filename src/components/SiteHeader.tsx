@@ -16,7 +16,7 @@ export function SiteHeader() {
     <header className="no-print border-b border-line bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
         <Link href="/" className="text-lg font-semibold tracking-tight">
-          Drive<span className="text-accent">Tally</span>
+          Fair<span className="text-accent">drive</span>
         </Link>
         <nav aria-label="Main" className="hidden items-center gap-5 text-sm md:flex">
           {NAV.map((n) => (
@@ -43,7 +43,7 @@ export function SiteHeader() {
           ) : (
             <Link
               href={`/sign-in?next=${encodeURIComponent(path ?? "/")}`}
-              className="rounded-full border border-fg px-4 py-1.5 hover:bg-fg hover:text-white"
+              className="rounded-full border border-accent px-4 py-1.5 font-medium text-accent hover:bg-accent hover:text-white"
               title={isSupabaseConfigured() ? undefined : "Sign-in is not set up yet"}
             >
               Sign in

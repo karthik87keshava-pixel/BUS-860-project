@@ -5,7 +5,7 @@ Do these in order. Each step ends with something to send back to Claude Code. Us
 ## Step 1 — Supabase (sign-in and saved comparisons)
 
 1. Go to https://supabase.com and click **Start your project**. Sign up with **Continue with GitHub** (use the GitHub account that owns the `BUS-860-project` repository).
-2. Click **New project**. Organization: your personal one is fine. Name: `drivetally`. Database password: click **Generate a password** and save it in your team password manager (we won't need it in the code). Region: **Canada (Central)**. Plan: **Free**. Click **Create new project** and wait about 2 minutes.
+2. Click **New project**. Organization: your personal one is fine. Name: `fairdrive`. Database password: click **Generate a password** and save it in your team password manager (we won't need it in the code). Region: **Canada (Central)**. Plan: **Free**. Click **Create new project** and wait about 2 minutes.
 3. In the left menu click **SQL Editor** → **New query**. Open `supabase/schema.sql` from GitHub, copy all of it, paste it in, and click **Run**. You should see "Success. No rows returned".
 4. In the left menu click **Project Settings** (gear). Under **Data API** copy the **Project URL** (like `https://abcdefgh.supabase.co`). Under **API Keys** copy the **Publishable key** (starts with `sb_publishable_`; older projects call it the "anon public" key). Do **not** copy the **Secret key** (`sb_secret_…`) or the `service_role` key.
 5. Send both values to Claude Code (the publishable key is designed to be public, so chat is fine for it).
@@ -28,9 +28,9 @@ Creating a Google login client is free; you do **not** need Google Cloud's free 
 
 
 1. Go to https://console.cloud.google.com and sign in with the team Google account. Accept the terms.
-2. Top bar → project picker → **New project**. Name `DriveTally`, click **Create**, then select it.
-3. Menu → **APIs & Services → OAuth consent screen** (may be called **Google Auth Platform**). Click **Get started**. App name `DriveTally`, support email = team email. Audience: **External**. Contact email = team email. Agree and **Create**.
-4. **Clients → Create client**. Application type: **Web application**. Name `DriveTally web`.
+2. Top bar → project picker → **New project**. Name `Fairdrive`, click **Create**, then select it.
+3. Menu → **APIs & Services → OAuth consent screen** (may be called **Google Auth Platform**). Click **Get started**. App name `Fairdrive`, support email = team email. Audience: **External**. Contact email = team email. Agree and **Create**.
+4. **Clients → Create client**. Application type: **Web application**. Name `Fairdrive web`.
    - Under **Authorized redirect URIs** click **Add URI** and paste the callback URL shown in Supabase → **Authentication → Sign In / Providers → Google** (it looks like `https://xxxx.supabase.co/auth/v1/callback`).
    - Click **Create**. Copy the **Client ID** and **Client secret**.
 5. In Supabase → **Authentication → Sign In / Providers → Google**: switch it **on**, paste the Client ID and Client secret, click **Save**.
@@ -41,8 +41,8 @@ Tell Claude Code when this is done; it will test sign-in, saving and sign-out on
 ## Optional — more sign-in emails per hour (free, with Gmail)
 
 Supabase's built-in email sends only a few sign-in emails per hour for the whole project. To lift that:
-1. In the team Gmail account, turn on 2-Step Verification (https://myaccount.google.com/security), then create an app password (https://myaccount.google.com/apppasswords) named `DriveTally`. Keep it private.
-2. Supabase → Authentication → Emails → **SMTP Settings**: enable custom SMTP. Sender email and username = the Gmail address; sender name `DriveTally`; host `smtp.gmail.com`; port `587`; password = the app password. Save.
+1. In the team Gmail account, turn on 2-Step Verification (https://myaccount.google.com/security), then create an app password (https://myaccount.google.com/apppasswords) named `Fairdrive`. Keep it private.
+2. Supabase → Authentication → Emails → **SMTP Settings**: enable custom SMTP. Sender email and username = the Gmail address; sender name `Fairdrive`; host `smtp.gmail.com`; port `587`; password = the app password. Save.
 3. Supabase → Authentication → **Rate Limits**: raise "Rate limit for sending emails" to about 100 per hour. Save.
 
 ## Free-tier limits worth knowing

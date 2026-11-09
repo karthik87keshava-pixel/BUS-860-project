@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* DriveTally palette: white, black, greys, one accent (deep teal, 5.5:1 contrast on white). */
+/* Fairdrive palette: white, black text, greys, one accent teal (5.47:1 with white text; darker teal 7.58:1 for hover). */
 :root {
   --bg: #ffffff;
   --fg: #111111;
@@ -8,6 +8,7 @@
   --line: #e4e4e7;
   --soft: #f5f5f5;
   --accent: #0f766e;
+  --accent-strong: #115e59;
   --accent-soft: #e6f2f1;
   --warn: #9a3412;
 }
@@ -19,6 +20,7 @@
   --color-line: var(--line);
   --color-soft: var(--soft);
   --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
   --color-accent-soft: var(--accent-soft);
   --color-warn: var(--warn);
   --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;

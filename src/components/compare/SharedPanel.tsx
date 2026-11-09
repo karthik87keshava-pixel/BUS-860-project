@@ -72,7 +72,7 @@ export function SharedPanel({
                     type="button"
                     aria-pressed={shared.kmMode === m}
                     onClick={() => set("kmMode", m)}
-                    className={`rounded-full border px-3 py-1 ${shared.kmMode === m ? "border-fg bg-fg text-white" : "border-line text-muted"}`}
+                    className={`rounded-full border px-3 py-1 ${shared.kmMode === m ? "border-accent bg-accent text-white" : "border-line text-muted"}`}
                   >
                     {m === "daily" ? "Per day" : "Per year"}
                   </button>

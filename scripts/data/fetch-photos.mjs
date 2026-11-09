@@ -12,7 +12,7 @@ if (process.env.HTTPS_PROXY && !process.env.NODE_USE_ENV_PROXY) {
 }
 
 const API = "https://en.wikipedia.org/w/api.php";
-const HEADERS = { "User-Agent": "DriveTally/1.0 (University of Alberta BUS 860 student project; https://github.com/karthik87keshava-pixel/BUS-860-project)" };
+const HEADERS = { "User-Agent": "Fairdrive/1.0 (University of Alberta BUS 860 student project; https://github.com/karthik87keshava-pixel/BUS-860-project)" };
 const FREE = /^(cc|public domain|pd|cc0)/i;
 const OUT = "src/data/photos.json";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

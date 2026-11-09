@@ -18,7 +18,7 @@ import { DATA_INFO } from "@/lib/vehicles-server";
 
 export const metadata: Metadata = {
   title: "How we calculate",
-  description: "Every formula, default value and data source behind DriveTally's Alberta car cost comparison.",
+  description: "Every formula, default value and data source behind Fairdrive's Alberta car cost comparison.",
 };
 
 // The worked example: the same numbers as "Example 3" in src/lib/calc/calc.test.ts
@@ -91,7 +91,7 @@ export default function HowWeCalculate() {
       <p className="text-sm font-medium uppercase tracking-widest text-accent">Method</p>
       <h1 className="mt-2 text-4xl font-semibold tracking-tight">How we calculate</h1>
       <p className="mt-4 text-lg text-muted">
-        DriveTally estimates the full cost of getting and running a car in Alberta over the period you choose. This page lists every
+        Fairdrive estimates the full cost of getting and running a car in Alberta over the period you choose. This page lists every
         formula, every default and every source, with the date we checked it. All defaults can be changed on the compare page.
       </p>
 
@@ -313,7 +313,7 @@ export default function HowWeCalculate() {
             <tr className="border-b border-line align-top">
               <td className="py-2 pr-4">Loan down payment</td>
               <td className="py-2 pr-4">10% of price</td>
-              <td className="py-2">DriveTally default.</td>
+              <td className="py-2">Fairdrive default.</td>
             </tr>
           </tbody>
         </table>
@@ -375,7 +375,7 @@ const H2 = ({ id, children }: { id: string; children: React.ReactNode }) => (
 );
 const H3 = ({ children }: { children: React.ReactNode }) => <h3 className="mt-6 text-lg font-semibold">{children}</h3>;
 const A = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <a href={href} className="underline decoration-line underline-offset-2 hover:text-accent" target="_blank" rel="noreferrer">
+  <a href={href} className="text-accent underline underline-offset-2 hover:text-accent-strong" target="_blank" rel="noreferrer">
     {children}
   </a>
 );

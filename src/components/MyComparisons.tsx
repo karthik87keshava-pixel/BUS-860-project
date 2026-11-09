@@ -79,7 +79,7 @@ export function MyComparisons() {
                   </p>
                 </div>
                 <div className="flex gap-2 text-sm">
-                  <Link href={`/compare?id=${c.id}`} className="rounded-full bg-fg px-4 py-1.5 text-white">
+                  <Link href={`/compare?id=${c.id}`} className="rounded-full bg-accent px-4 py-1.5 text-white">
                     Open
                   </Link>
                   <button type="button" onClick={() => rename(c)} className="rounded-full border border-line px-4 py-1.5 hover:border-fg">
