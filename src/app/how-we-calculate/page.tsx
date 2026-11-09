@@ -146,9 +146,11 @@ export default function HowWeCalculate() {
       </p>
       <H3>Photos</H3>
       <p>
-        Photos come from Wikimedia Commons, using the lead image of the model&rsquo;s Wikipedia article. Only Creative Commons or public-domain photos
-        are used, and the photographer and licence are shown under each one. The photo shows the model, not always the exact year or trim. If no free
-        photo exists, we draw a body-type outline instead.
+        Photos come from Wikimedia Commons, and only Creative Commons or public-domain photos are used, with the photographer and licence shown
+        under each one. We first look for an exterior photo whose file name has the same make, model and model year (or one year either side),
+        preferring front and side views and skipping interiors, details, other countries&rsquo; versions, fleet and race cars. If there is none,
+        we show the model&rsquo;s general photo (the lead image of its Wikipedia article), labelled &ldquo;Model photo, not this year&rdquo;. A
+        photo may not show the exact trim or colour. If no free photo exists, we draw a body-type outline instead.
       </p>
 
       <H2 id="formulas">2. Formulas</H2>

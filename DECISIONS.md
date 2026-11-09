@@ -43,6 +43,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 - **2026-10-28** — Lead image of the "<Make> <Model>" Wikipedia article, used only if its Commons licence is Creative Commons or public domain; photographer and licence shown under the photo with links. One photo per model family (not per year/trim) for the November version. No free photo → a drawn body-type outline (sedan, SUV, truck, hatchback, van, wagon, coupe, convertible).
 - **2026-10-28** — Wikimedia rate-limits (HTTP 429) our build environment's shared internet address, so photos could not be pre-fetched yet. The live site looks them up itself on Vercel and caches each for 30 days. `npm run data:photos` pre-fetches all families and writes `docs/photo-coverage.md` (the list of gaps) when run from an unblocked computer.
 
+- **2026-11-09** — **Photos matched to model year.** The site searches Wikimedia Commons for a free-licence exterior photo whose file name has the make, model and model year (±1), preferring front/side landscape shots and skipping interiors, details, other markets (e.g. a Chinese-market Jetta), fleet and race cars; else the model's general photo (captioned "Model photo, not this year"); else the outline. Random sample of 40 vehicles on the live site: 32 year-matched, 8 model photo, 0 outline.
+
 ## Alberta defaults (all editable; sources on "How we calculate")
 
 - **2026-10-28** — Regular gas $1.55/L (Edmonton/Calgary Sept 2026 averages 151–156¢; Alberta suspended its 13¢ fuel tax on Oct 1, 2026). Premium $1.80, diesel $1.65 (estimates). Fuel +2%/year.
@@ -97,4 +99,4 @@ Every assumption, data source and design choice, with the date. Sources for each
 - Still to do: Safari and real-phone check by the team. Google sign-in skipped by team decision. (`docs/SETUP.md`), then live testing of sign-in and saving.
 - 2026-11-09: Supabase project created (Canada Central). Checked from here: table exists, row-level security refuses saving when signed out, email sign-in on. Price index loaded.
 - Waiting on network access: Wikimedia pre-fetch (works from Vercel).
-- December: more verified prices, photos per generation/year, Safari check, accessibility audit, print polish.
+- Done 2026-11-09 from the December list: accessibility audit (0 issues), print polish, 141 verified prices, year-matched photos. Remaining: Safari / real iPhone check by the team.
