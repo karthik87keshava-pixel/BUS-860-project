@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     ids.map(async (id) => {
       const v = getVehicle(id);
       if (!v) return null;
-      return { ...v, photo: await findPhoto(v.make, v.family) };
+      return { ...v, photo: await findPhoto(v.make, v.family, v.year) };
     }),
   );
   return NextResponse.json({ vehicles });

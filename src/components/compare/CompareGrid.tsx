@@ -218,14 +218,14 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
       <div className="aspect-[16/9] w-full overflow-hidden rounded-lg bg-soft print:aspect-[3/1]">
         {v.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={v.photo.url} alt={`${v.make} ${v.family} (photo of the model, may not show this exact year or trim)`} className="h-full w-full object-cover" loading="lazy" />
+          <img src={v.photo.url} alt={v.photo.match === "year" ? `${v.year} ${v.make} ${v.family} (may not show this exact trim or colour)` : `${v.make} ${v.family} (photo of the model, may not show this year or trim)`} className="h-full w-full object-cover" loading="lazy" />
         ) : (
           <BodyOutline body={v.body} className="h-full w-full p-4" />
         )}
       </div>
       {v.photo ? (
         <p className="mt-1 truncate text-[10px] leading-tight text-muted" title={`${v.photo.author}, ${v.photo.license}`}>
-          Photo:{" "}
+          {v.photo.match === "year" ? "Photo" : "Model photo, not this year"}:{" "}
           <a href={v.photo.pageUrl} target="_blank" rel="noreferrer" className="underline">
             {v.photo.author}
           </a>

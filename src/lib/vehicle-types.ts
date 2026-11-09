@@ -27,4 +27,5 @@ export interface Photo {
   author: string; // photographer, plain text
   license: string; // e.g. "CC BY-SA 4.0"
   licenseUrl?: string;
+  match?: "year" | "model"; // "year": a photo of this model year (±1); "model": a general photo of the model
 }
