@@ -17,7 +17,7 @@ const photos = cached as Record<string, Photo | null>;
 
 const FREE = /^(cc|public domain|pd|cc0)/i;
 // Not the version sold in Canada, or not a regular car: other markets, fleet and race cars
-const NOT_CANADIAN = /market|china|chinese|japan|jdm|india|brazil|australia|europe|uk\b|thailand|indonesia|mexico|russia|police|ranger|taxi|patrol|ambulance|fire|sheriff|rcmp|rally|racing|race car|\brace\b|nascar|modified|tuned|wrap|livery|prototype|concept|camouflage|mule/i;
+const NOT_CANADIAN = /market|china|chinese|japan|jdm|india|brazil|australia|europe|uk\b|thailand|indonesia|mexico|russia|moscow|hong kong|motor show|auto show|mobility show|\bshow\b|salon|gims|expo|police|ranger|taxi|patrol|ambulance|fire|sheriff|rcmp|rally|racing|race car|\brace\b|nascar|modified|tuned|wrap|livery|prototype|concept|camouflage|mule/i;
 // Not a photo of the whole car from outside
 const NOT_EXTERIOR = /interior|dashboard|cockpit|engine|motor\b|badge|logo|emblem|wheel|rim|seat|trunk|boot|cargo|detail|charging|charge port|steering|instrument|gauge|display|screen|headlight|taillight|light|grille|key|plate|cutaway|chassis|crash|wreck|accident|toy|model car|lego/i;
 
@@ -65,46 +65,61 @@ function wrongVersion(rawTitle: string, fuelType?: string) {
   return plugIn || electric; // gas, hybrid, diesel
 }
 
+/** The model year in a Commons file name: by convention it is written right before the make ("2019 Toyota RAV4 LE…"). */
+function modelYearIn(title: string, make: string): number | null {
+  const m = new RegExp(`\\b(19[89]\\d|20[0-3]\\d)\\s+${make.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").exec(title);
+  return m ? Number(m[1]) : null;
+}
+
 /**
- * A Commons photo of this make and model whose file name has a model year within `maxGap` of the vehicle's,
- * the closest year winning. With `withYear`, the search itself asks for that year.
+ * The best Commons photo of this make and model, closest model year first (searching the exact phrase "2025 Toyota RAV4",
+ * then one year either side, then the model without a year). Only years within 6 of the vehicle's count;
+ * "year" means within one year, otherwise it is shown as a general model photo.
  */
-async function yearPhoto(make: string, family: string, year: number, fuelType?: string, maxGap = 1, withYear = true): Promise<Photo | null> {
+async function yearPhoto(make: string, family: string, year: number, fuelType?: string): Promise<Photo | null> {
   const familyWords = family.toLowerCase().split(/\s+/);
-  const d = await api(COMMONS, {
-    action: "query",
-    generator: "search",
-    gsrnamespace: "6",
-    gsrsearch: withYear ? `intitle:${year} intitle:"${family}" ${make}` : `intitle:"${family}" ${make}`,
-    gsrlimit: "40",
-    prop: "imageinfo",
-    iiprop: "url|extmetadata|size",
-    iiurlwidth: "640",
-  });
-  const pages: { title: string; imageinfo?: ImageInfo[] }[] = d?.query?.pages ?? [];
-  let best: { score: number; info: ImageInfo } | null = null;
-  for (const p of pages) {
-    const info = p.imageinfo?.[0];
-    if (!info) continue;
-    const title = p.title.replace(/^File:/, "");
-    const lower = title.toLowerCase();
-    if (!/\.(jpe?g|png|webp)$/i.test(title) || NOT_EXTERIOR.test(title) || NOT_CANADIAN.test(title) || wrongVersion(title, fuelType)) continue;
-    if (!familyWords.every((w) => lower.includes(w)) || !lower.includes(make.toLowerCase().split(" ")[0])) continue;
-    if (!info.width || info.width / info.height < 1.2) continue; // landscape only
-    const years = (title.match(/\b(19[89]\d|20[0-3]\d)\b/g) ?? []).map(Number);
-    const gap = Math.min(...years.map((y) => Math.abs(y - year)));
-    if (!(gap <= maxGap)) continue;
-    let score = gap === 0 ? 3 : gap === 1 ? 1 : -gap;
-    if (/front/i.test(title)) score += 2;
-    if (/\b(left|right|side|3\/4|quarter)\b/i.test(title)) score += 1;
-    if (/\brear\b|\bback\b/i.test(title)) score -= 2;
-    if (!toPhoto(info, "year")) continue; // licence check
-    if (!best || score > best.score) best = { score, info };
+  const queries = [
+    `intitle:"${year} ${make} ${family}"`,
+    `intitle:"${year - 1} ${make} ${family}"`,
+    `intitle:"${year + 1} ${make} ${family}"`,
+    `intitle:"${make} ${family}"${fuelType === "hybrid" ? " intitle:hybrid" : ""}`,
+  ];
+  let best: { score: number; gap: number; info: ImageInfo } | null = null;
+  for (const q of queries) {
+    const d = await api(COMMONS, {
+      action: "query",
+      generator: "search",
+      gsrnamespace: "6",
+      gsrsearch: q,
+      gsrlimit: "50",
+      prop: "imageinfo",
+      iiprop: "url|extmetadata|size",
+      iiurlwidth: "640",
+    });
+    const pages: { title: string; imageinfo?: ImageInfo[] }[] = d?.query?.pages ?? [];
+    for (const p of pages) {
+      const info = p.imageinfo?.[0];
+      if (!info) continue;
+      const title = p.title.replace(/^File:/, "");
+      const lower = title.toLowerCase();
+      if (!/\.(jpe?g|png|webp)$/i.test(title) || NOT_EXTERIOR.test(title) || NOT_CANADIAN.test(title) || wrongVersion(title, fuelType)) continue;
+      if (!familyWords.every((w) => lower.includes(w))) continue;
+      if (!info.width || info.width / info.height < 1.2) continue; // landscape only
+      const y = modelYearIn(title, make);
+      if (y === null) continue;
+      const gap = Math.abs(y - year);
+      if (gap > 6) continue;
+      let score = gap === 0 ? 3 : gap === 1 ? 1 : -gap;
+      if (/front/i.test(title)) score += 2;
+      if (/\b(left|right|side|3\/4|quarter)\b/i.test(title)) score += 1;
+      if (/\brear\b|\bback\b|heck/i.test(title)) score -= 2;
+      if (fuelType === "hybrid" && /hybrid/i.test(title)) score += 1;
+      if (!toPhoto(info, "year")) continue; // licence check
+      if (!best || score > best.score) best = { score, gap, info };
+    }
+    if (best && best.gap <= 1) break; // good enough; skip the wider searches
   }
-  if (!best) return null;
-  const bestYears = (best.info.descriptionurl.match(/\b(19[89]\d|20[0-3]\d)\b/g) ?? []).map(Number);
-  const close = bestYears.some((y) => Math.abs(y - year) <= 1);
-  return toPhoto(best.info, close ? "year" : "model");
+  return best ? toPhoto(best.info, best.gap <= 1 ? "year" : "model") : null;
 }
 
 /** The model's general photo: the lead image of its Wikipedia article (skipped if it shows another version). */
@@ -129,8 +144,7 @@ export async function findPhoto(make: string, family: string, year?: number, fue
   const key = photoKey(make, family);
   try {
     if (year) {
-      // Same year (±1); else the nearest year of the same version within 6 years
-      const p = (await yearPhoto(make, family, year, fuelType)) ?? (await yearPhoto(make, family, year, fuelType, 6, false));
+      const p = await yearPhoto(make, family, year, fuelType);
       if (p) return p;
     }
   } catch (e) {
