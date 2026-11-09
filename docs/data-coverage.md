@@ -2,7 +2,7 @@
 
 Generated 2026-11-09 by `npm run data:build`. Source: NRCan Fuel Consumption Ratings (https://open.canada.ca/data/en/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64), downloaded 2026-11-09, cross-checked with US EPA fueleconomy.gov.
 
-**17,569 vehicle versions** from model year 2010 to 2026, 56 makes, 668 model families.
+**18,878 vehicle versions** from model year 2010 to 2027, 58 makes, 705 model families.
 
 ## Source files
 
@@ -19,23 +19,24 @@ Generated 2026-11-09 by `npm run data:build`. Source: NRCan Fuel Consumption Rat
 
 | Year | Gas | Hybrid | Plug-in hybrid | Electric | Diesel | Total |
 |---|---:|---:|---:|---:|---:|---:|
-| 2026 | 528 | 66 | 57 | 277 | 16 | 944 |
-| 2025 | 626 | 59 | 56 | 279 | 13 | 1033 |
-| 2024 | 716 | 49 | 45 | 224 | 18 | 1052 |
-| 2023 | 842 | 41 | 33 | 159 | 20 | 1095 |
-| 2022 | 896 | 38 | 41 | 82 | 28 | 1085 |
-| 2021 | 891 | 36 | 40 | 49 | 29 | 1045 |
-| 2020 | 900 | 32 | 31 | 40 | 20 | 1023 |
-| 2019 | 960 | 31 | 26 | 35 | 27 | 1079 |
-| 2018 | 978 | 30 | 25 | 21 | 28 | 1082 |
-| 2017 | 964 | 30 | 19 | 23 | 15 | 1051 |
-| 2016 | 994 | 33 | 16 | 27 | 21 | 1091 |
-| 2015 | 997 | 37 | 9 | 14 | 30 | 1087 |
-| 2014 | 917 | 36 | 6 | 9 | 23 | 991 |
-| 2013 | 909 | 44 | 4 | 9 | 19 | 985 |
-| 2012 | 932 | 35 | 1 | 2 | 16 | 986 |
-| 2011 | 932 | 34 | 0 | 0 | 15 | 981 |
-| 2010 | 920 | 25 | 0 | 0 | 14 | 959 |
+| 2027 | 430 | 52 | 22 | 233 | 16 | 753 |
+| 2026 | 551 | 66 | 57 | 319 | 16 | 1009 |
+| 2025 | 638 | 59 | 57 | 286 | 13 | 1053 |
+| 2024 | 731 | 49 | 48 | 225 | 18 | 1071 |
+| 2023 | 862 | 41 | 37 | 168 | 20 | 1128 |
+| 2022 | 918 | 42 | 44 | 82 | 28 | 1114 |
+| 2021 | 924 | 36 | 41 | 50 | 29 | 1080 |
+| 2020 | 937 | 33 | 33 | 40 | 20 | 1063 |
+| 2019 | 994 | 31 | 26 | 36 | 27 | 1114 |
+| 2018 | 1014 | 30 | 25 | 22 | 31 | 1122 |
+| 2017 | 991 | 30 | 19 | 26 | 18 | 1084 |
+| 2016 | 1014 | 33 | 16 | 29 | 21 | 1113 |
+| 2015 | 1013 | 39 | 11 | 16 | 30 | 1109 |
+| 2014 | 946 | 39 | 9 | 11 | 23 | 1028 |
+| 2013 | 916 | 44 | 4 | 10 | 19 | 993 |
+| 2012 | 972 | 35 | 1 | 3 | 16 | 1027 |
+| 2011 | 964 | 34 | 1 | 1 | 15 | 1015 |
+| 2010 | 963 | 25 | 0 | 0 | 14 | 1002 |
 
 ## Cross-check against US EPA (fueleconomy.gov)
 
@@ -43,7 +44,7 @@ Generated 2026-11-09 by `npm run data:build`. Source: NRCan Fuel Consumption Rat
 - Close match (similar name, same engine): 6,375
 - No EPA match (often Canada-only names or trims): 1,175
 
-EPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hybrid", (b) tell small from large SUVs in 2010–2014, where NRCan doesn't split them, and (c) fill the drive type when the name doesn't show it. All consumption numbers are NRCan's.
+EPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hybrid", (b) tell small from large SUVs in 2010–2014, where NRCan doesn't split them, and (c) fill the drive type when the name doesn't show it. Consumption numbers are NRCan's, except for the vehicles listed under "Added from the EPA list" below.
 
 ### Cars changed using EPA data (35)
 
@@ -82,6 +83,29 @@ EPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hy
 - 2024 Toyota Venza AWD: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
 - 2012 Infiniti M35h: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
 - 2013 Infiniti M35h: marked as hybrid (EPA lists it as a hybrid; NRCan name doesn't say so)
+
+## Added from the EPA list (1309 versions)
+
+NRCan rates vehicles through the model year and had not published any 2027 ratings when this ran. Where the US EPA rated a model in a year NRCan has no row for, we added the EPA rating (converted to L/100 km or kWh/100 km), marked "US EPA" on the site. Families must also appear in NRCan in some year (so US-only models are left out), except brand-new 2026–2027 nameplates, which carry a note asking users to check Canadian availability. Skipped: 305 rows of US-only models, 5 hydrogen or natural-gas rows, 132 rows from makes not sold in Canada.
+
+- **2027:** Aston Martin DB12, Aston Martin DB12 S, Aston Martin DBX, Aston Martin Valhalla, Aston Martin Vanquish, Aston Martin Vantage, Audi A3, Audi A5, Audi A6, Audi A8, Audi Q3, Audi Q5, Audi Q6, Audi Q7, Audi Q8, Audi Q9 (new nameplate), Audi RS 3, Audi RS Q8, Audi RS e-tron GT, Audi S e-tron, Audi S3, Audi S5, Audi S6, Audi S8, Audi SQ5, Audi SQ6, Audi SQ7, Audi SQ8, Audi SQ9 (new nameplate), BMW 2 Series, BMW 4 Series, BMW 5 Series, BMW 7 Series, BMW M2, BMW M3, BMW M4, BMW M5, BMW X1, BMW X2, BMW X5, BMW X6, BMW X7, BMW XM, BMW i3, BMW i5, BMW i7, BMW iX, Bentley Bentayga, Bentley Continental, Bentley Flying Spur, Buick Enclave, Buick Encore, Cadillac Escalade, Cadillac Escalade-V, Cadillac LYRIQ, Cadillac OPTIQ, Cadillac VISTIQ, Chevrolet Blazer EV, Chevrolet Bolt EV, Chevrolet Colorado, Chevrolet Corvette, Chevrolet Equinox, Chevrolet Equinox EV, Chevrolet Silverado, Chevrolet Silverado EV, Chevrolet Suburban, Chevrolet Tahoe, Chevrolet Trailblazer, Chevrolet Traverse, Chrysler Pacifica, Dodge Charger, Dodge Durango, Ferrari 12Cilindri, Ferrari Amalfi (new nameplate), Ferrari F80, Ferrari Purosangue, Ford Expedition, Ford Explorer, GMC Acadia, GMC Canyon, GMC Sierra, GMC Sierra EV, GMC Terrain, GMC Yukon, GMC Yukon XL, Genesis G70, Genesis G80, Genesis GV60, Genesis GV70, Genesis GV80, Honda CR-V, Honda Civic, Honda HR-V, Honda Odyssey, Honda Passport, Honda Prelude, Hyundai IONIQ 5, Hyundai IONIQ 6, Hyundai IONIQ 9, Hyundai Kona, Hyundai Palisade, Hyundai Santa Cruz, Hyundai Santa Fe, Hyundai Sonata, Hyundai Venue, Infiniti QX60, Infiniti QX65 (new nameplate), Infiniti QX80, Jeep Compass, Jeep Gladiator, Jeep Grand Cherokee, Jeep Grand Cherokee L, Jeep Grand Wagoneer, Jeep Wrangler, Kia Carnival, Kia EV3 (new nameplate), Kia EV6, Kia EV9, Kia K4, Kia K5, Kia Niro, Kia Seltos, Kia Sorento, Kia Sportage, Kia Telluride, Lamborghini Temerario, Lamborghini Urus, Land Rover Defender, Land Rover Discovery, Land Rover Range Rover, Land Rover Range Rover Sport, Lexus ES, Lexus GX, Lexus IS, Lexus LX, Lexus RX, Lexus TZ (new nameplate), Lincoln Aviator, Lincoln Corsair, Lincoln Navigator, Lotus Emira (new nameplate), Lucid Air, Lucid Gravity (new nameplate), MINI Convertible, MINI Cooper (Hardtop), MINI Countryman, Maserati GranTurismo, Maserati Grancabrio, Maserati Grecale, Maserati MCPURA (new nameplate), Mercedes-Benz AMG GT, Mercedes-Benz C-Class, Mercedes-Benz CLA, Mercedes-Benz CLE, Mercedes-Benz E-Class, Mercedes-Benz EQE, Mercedes-Benz EQS, Mercedes-Benz G-Class, Mercedes-Benz GLA, Mercedes-Benz GLC, Mercedes-Benz GLE, Mercedes-Benz GLS, Mercedes-Benz Maybach, Mercedes-Benz S-Class, Mercedes-Benz SL-Class, Mitsubishi Eclipse Sportback (new nameplate), Mitsubishi RVR, Nissan Altima, Nissan Armada, Nissan Frontier, Nissan Kicks, Nissan Murano, Nissan Rogue, Nissan Sentra, Nissan Z, Porsche 911, Porsche Cayenne, Porsche Macan, Porsche Panamera, Porsche Taycan, Ram 1500, Rivian R1S, Rivian R1T, Rivian R2 (new nameplate), Rolls-Royce Cullinan, Rolls-Royce Ghost, Rolls-Royce Phantom, Rolls-Royce Spectre, Subaru Ascent, Subaru BRZ, Subaru Crosstrek, Subaru Forester, Subaru Impreza, Subaru Outback, Subaru Solterra, Subaru Trailseeker, Subaru Uncharted, Tesla Model 3, Tesla Model Y, Toyota C-HR, Toyota Camry, Toyota Corolla, Toyota Crown, Toyota GR86, Toyota Land Cruiser, Toyota Prius, Toyota bZ, VinFast VF7, VinFast VF8, VinFast VF9, Volkswagen Atlas, Volkswagen Atlas Cross Sport, Volkswagen Golf GTI, Volkswagen Golf R, Volkswagen Jetta, Volkswagen Taos, Volkswagen Tiguan, Volvo EX60 (new nameplate), Volvo EX90, Volvo XC60, Volvo XC90
+- **2026:** Acura ZDX, Audi RS e-tron GT, Audi S8, BMW M8, Bugatti Nevera (new nameplate), Chrysler Voyager, Honda Prologue, Kia EV6, Kia K5, Lotus Emira (new nameplate), Lucid Air, Lucid Gravity (new nameplate), Maserati GT2 Stradale, Maserati GranTurismo, Maserati Grancabrio, Maserati Grecale, Maserati MCPURA (new nameplate), Nissan Altima, Volvo EX90, Volvo S90
+- **2025:** Audi A4 allroad, Audi RS e-tron GT, Chrysler Voyager, Ferrari SF90 Spider, Honda Prologue, Kia K5, Maserati GranTurismo, Mercedes-Benz Maybach, Subaru Legacy, Subaru Solterra
+- **2024:** Audi A4 allroad, Audi RS 3, Chrysler Voyager, INEOS Grenadier, MINI Clubman, Maserati Grancabrio, Mercedes-Benz Maybach, Nissan Titan, Toyota Prius Prime, Toyota RAV4 Prime, Volkswagen Arteon
+- **2023:** Audi A4 allroad, Audi RS 3, BMW X2, Bentley Continental GT Convertible, Chrysler Voyager, Ferrari 296 GTB, Ferrari 812 Competizione, Ferrari Daytona SP3, Ferrari Roma, Ferrari SF90 Spider, Ferrari SF90 Stradale, INEOS Grenadier, McLaren Artura, Mercedes-Benz Maybach, Nissan Ariya, Nissan LEAF, Nissan Titan, Volkswagen Arteon
+- **2022:** Audi A4 allroad, Audi RS 3, BMW M2, Chrysler Voyager, Ferrari 296 GTB, Ferrari 812 Competizione, Ferrari Roma, Ferrari SF90 Spider, Ferrari SF90 Stradale, Ford Transit, Honda Insight, Hyundai Accent, McLaren 720S, McLaren 765LT, McLaren GT, Mercedes-Benz Maybach, Nissan Titan, Toyota Avalon, Volkswagen Arteon
+- **2021:** Audi A4 allroad, BMW M3, BMW M4, Bentley Continental GT Convertible, Chrysler Voyager, Ferrari Roma, Ferrari SF90 Stradale, Hyundai Accent, Jaguar I-PACE, Jaguar XE, Mazda Mazda2, McLaren 720S, McLaren 720S Coupe LM, McLaren 765LT, McLaren Elva, McLaren GT, Nissan 370Z, Nissan Frontier, Toyota Land Cruiser, Volvo V90
+- **2020:** Audi A4 allroad, BMW M3, Chevrolet Sonic, Karma Revero, Kia Cadenza, Kia K900, Mazda Mazda2, McLaren 570S, McLaren 600LT, McLaren 620R, McLaren 720S, McLaren GT, McLaren Sabre, McLaren Speedtail, Mercedes-Benz Maybach, Polestar 1, Porsche Boxster, Porsche Cayman, Toyota Land Cruiser, Volkswagen Atlas, Volvo V90
+- **2019:** Audi A4 allroad, BMW M8, Cadillac ATS, Cadillac ATS-V, Chevrolet Sonic, FIAT 500e, Infiniti QX30, Jaguar XJL, Jeep Wrangler Unlimited, Kia K900, Mazda Mazda2, McLaren 570GT, McLaren 570S, McLaren 600LT, McLaren 720S, McLaren Senna, Mercedes-Benz Maybach, Toyota Land Cruiser
+- **2018:** Audi A4 allroad, BMW M5, Bentley Continental Supersports Convertible, FIAT 500e, Ferrari California, Jaguar E-Pace, Jaguar XJL, Land Rover Discovery, Land Rover Range Rover, Land Rover Range Rover Sport, Mazda Mazda2, McLaren 540C, McLaren 570GT, McLaren 570S, McLaren 720S, Mercedes-Benz CLS, Mercedes-Benz Maybach, Toyota Land Cruiser, Volkswagen Jetta
+- **2017:** Audi A4 allroad, Audi RS 3, Bentley Continental Supersports, Bentley Continental Supersports Convertible, FIAT 500e, Ferrari California, Honda Clarity, Land Rover Discovery, Land Rover Range Rover, Land Rover Range Rover Sport, Mazda Mazda2, McLaren 570GT, McLaren 570S, Mercedes-Benz Maybach, Nissan Quest, Porsche Panamera, Tesla Model 3, Toyota Land Cruiser
+- **2016:** Audi A4 allroad, FIAT 500e, Ferrari California, Mazda CX-9, Mazda Mazda2, McLaren 570S, McLaren 650S, McLaren 650S Can-Am, McLaren 675LT, McLaren MSO HS, Mercedes-Benz GLC, Mercedes-Benz Maybach, Nissan Quest, Rolls-Royce Dawn, Toyota Land Cruiser, Volkswagen Eos, Volkswagen e-Golf
+- **2015:** Audi A4 allroad, BMW M2, Bugatti Veyron, Cadillac ELR, FIAT 500e, Ferrari California, Honda Crosstour, Infiniti Q50S, Land Rover Discovery Sport, McLaren 650S, McLaren P1, Toyota Land Cruiser, Volkswagen Golf R, Volkswagen e-Golf
+- **2014:** BMW 2 Series, BMW M2, BMW i3, BMW i8, Bugatti Veyron, FIAT 500e, Ferrari California, Honda Insight, Hyundai Elantra, Hyundai Genesis Coupe, Infiniti Q50S, MINI Cooper (Hardtop), McLaren MP4-12C, McLaren P1, Nissan Cube, Toyota Land Cruiser, Volkswagen Golf GTI
+- **2013:** Bugatti Veyron, FIAT 500e, Ferrari California, Hyundai Santa Fe, Toyota Land Cruiser, Volkswagen Golf GTI
+- **2012:** BMW M6, Bentley Continental Supersports Convertible, Dodge Ram 1500, Ferrari California, Honda Crosstour, Jeep Wrangler Unlimited, Mazda CX-7, McLaren MP4-12C, Mitsubishi Galant, Saab 9-3, Saab 9-3X, Saab 9-4X, Saab 9-5, Suzuki Equator, Tesla Model S, Volkswagen Golf GTI
+- **2011:** Bentley Continental Supersports Convertible, Chevrolet Volt, Ferrari 599 GTB Fiorano, Ferrari 612 Scaglietti, Ferrari California, Ford Crown Victoria, Mitsubishi Galant, Nissan LEAF, Nissan Quest, Saab 9-3, Saab 9-3X, Saab 9-4X, Saab 9-5, Scion iQ, Toyota Land Cruiser, Volkswagen CC, Volkswagen Golf GTI
+- **2010:** Acura ZDX, Aston Martin Rapide, Jaguar XJ, Kia Optima, Lincoln Navigator, Mitsubishi Eclipse, Saab 9-3, Saab 9-3X, Saab 9-5, Scion tC, Scion xB, Scion xD, Suzuki Kizashi, Toyota Land Cruiser, Volkswagen Golf GTI
 
 ## Rows we did not use (820)
 

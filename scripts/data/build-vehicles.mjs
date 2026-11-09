@@ -324,6 +324,131 @@ for (const file of manifest.files) {
   }
 }
 
+// ---------- fill gaps from the US EPA list ----------
+// NRCan rates vehicles through the model year, and has not published any 2027 ratings yet. Where the EPA rated a
+// model in a year that NRCan has no row for (same make and model family), we add the EPA rating, marked as such.
+// To avoid US-only models, a family must also appear in NRCan in some year, except brand-new 2026–2027 nameplates.
+const LAST_EPA_YEAR = 2027;
+const nrcanMakes = new Map([...new Set(out.map((v) => v.make))].map((m) => [m.toLowerCase(), m]));
+const nrcanFamilies = new Map(); // make -> Set of normalized family names (any year)
+const nrcanFamilyYear = new Set(); // make|normFamily|year
+const famNameByNorm = new Map(); // make|normFamily -> family name as shown
+for (const v of out) {
+  const nf = norm(v.family);
+  if (!nrcanFamilies.has(v.make)) nrcanFamilies.set(v.make, new Set());
+  nrcanFamilies.get(v.make).add(nf);
+  nrcanFamilyYear.add(`${v.make}|${nf}|${v.year}`);
+  famNameByNorm.set(`${v.make}|${nf}`, v.family);
+}
+function epaTransmission(t) {
+  // "Automatic (S8)" → AS8, "Automatic (AM-S7)" → AM7, "Automatic (AV-S6)" / "(variable gear ratios)" → AV, "Manual 6-spd" → M6
+  if (/variable|AV/i.test(t)) return "AV";
+  let m = /\(AM-?S?(\d+)\)/i.exec(t);
+  if (m) return `AM${m[1]}`;
+  m = /\(S(\d+)\)/i.exec(t);
+  if (m) return `AS${m[1]}`;
+  m = /\(A(\d+)\)/i.exec(t);
+  if (m) return `A${m[1]}`;
+  m = /Manual\s*(\d+)/i.exec(t);
+  if (m) return `M${m[1]}`;
+  return /manual/i.test(t) ? "M" : "A";
+}
+function epaClass(vc) {
+  const c = vc.toLowerCase();
+  if (c.includes("small pickup")) return ["Pickup truck: Small", "pickup-small"];
+  if (c.includes("pickup")) return ["Pickup truck: Standard", "pickup-large"];
+  if (c.includes("minivan")) return ["Minivan", "van"];
+  if (c.includes("van")) return ["Van: Passenger", "van"];
+  if (c.includes("small sport utility")) return ["Sport utility vehicle: Small", "suv-small"];
+  if (c.includes("sport utility") || c.includes("special purpose")) return ["Sport utility vehicle: Standard", "suv-large"];
+  if (c.includes("two seater")) return ["Two-seater", "sports"];
+  if (c.includes("minicompact") || c.includes("subcompact")) return ["Subcompact", "car-small"];
+  if (c.includes("compact") || c.includes("small station")) return ["Compact", "car-compact"];
+  if (c.includes("midsize")) return ["Mid-size", "car-mid"];
+  if (c.includes("large")) return ["Full-size", "car-large"];
+  return ["Mid-size", "car-mid"];
+}
+// EPA spells some makes differently; McLaren and Saab were sold in Canada but are not in NRCan's tables
+const EPA_MAKE_ALIAS = { "McLaren Automotive": "McLaren", "INEOS Automotive": "INEOS", "Bugatti Rimac": "Bugatti", Saab: "Saab" };
+const CANADA_MAKES_NOT_IN_NRCAN = new Set(["McLaren", "Saab"]);
+// EPA model names that are sold under another name in Canada, or that our rules would group wrongly
+function epaFamilyFix(make, model) {
+  if (make === "Mazda" && /^\d\b/.test(model)) return `Mazda${model[0]}`;
+  if (make === "Volkswagen" && /^GLI/i.test(model)) return "Jetta";
+  if (make === "Volkswagen" && /^GTI/i.test(model)) return "Golf GTI";
+  if (make === "Mitsubishi" && /^Outlander Sport/i.test(model)) return "RVR";
+  if (make === "Mitsubishi" && /^Eclipse Sportback/i.test(model)) return "Eclipse Sportback";
+  if (make === "Chevrolet" && /^Bolt/i.test(model)) return "Bolt EV";
+  if (make === "Toyota" && /^GR 86/i.test(model)) return "GR86";
+  if (make === "McLaren") return model.replace(/\s+(Spider|Coupe|Spyder)$/i, "").trim();
+  if (make === "Saab") return model.split(/\s+/)[0];
+  return null;
+}
+const L100 = (mpg) => (mpg > 0 ? Math.round((235.215 / mpg) * 10) / 10 : null);
+const KWH_KM = (kwh100mi) => (kwh100mi > 0 ? Math.round((kwh100mi / 1.609344) * 10) / 10 : null);
+const epaAdded = [];
+const epaSkipped = { usOnly: 0, otherFuel: 0, unknownMake: 0 };
+const epaAll = parseCsv(fs.readFileSync(path.join(RAW, "epa-vehicles.csv"), "utf8")).filter((r) => +r.year >= FIRST_YEAR && +r.year <= LAST_EPA_YEAR);
+for (const r of epaAll) {
+  const year = +r.year;
+  const make = EPA_MAKE_ALIAS[r.make] ?? nrcanMakes.get(r.make.toLowerCase()) ?? nrcanMakes.get(r.make.toLowerCase().replace(/ usa$/, ""));
+  if (!make) { epaSkipped.unknownMake++; continue; }
+  const model = r.model.trim();
+  const fixedFamily = epaFamilyFix(make, model);
+  // Family: an NRCan family whose name starts this EPA model name (longest wins), else our naming rules
+  const nm = norm(model);
+  const known = [...(nrcanFamilies.get(make) ?? [])].filter((f) => nm.startsWith(f)).sort((a, b) => b.length - a.length)[0];
+  const family = fixedFamily ?? (known ? famNameByNorm.get(`${make}|${known}`) : familyName(make, model, r.baseModel));
+  const nf = norm(family);
+  if (nrcanFamilyYear.has(`${make}|${nf}|${year}`)) continue; // NRCan already covers this model this year
+  const canadianMakeMissingFromNrcan = CANADA_MAKES_NOT_IN_NRCAN.has(make);
+  const isNewNameplate = !canadianMakeMissingFromNrcan && !nrcanFamilies.get(make)?.has(nf);
+  if (isNewNameplate && year < 2026) { epaSkipped.usOnly++; continue; }
+
+  const atv = r.atvType;
+  if (/CNG|FCV|Bifuel/i.test(atv) || /hydrogen|natural gas/i.test(r.fuelType)) { epaSkipped.otherFuel++; continue; }
+  const [nrcanClass, bucket] = epaClass(r.VClass);
+  const v = {
+    year, make, model, nrcanClass,
+    transmission: epaTransmission(r.trany),
+    engineL: num(r.displ) || null,
+    cylinders: num(r.cylinders) || null,
+    motorKw: num((/(\d+)\s*kW/i.exec(r.evMotor ?? "") ?? [])[1]),
+    ratingSource: "EPA",
+  };
+  if (atv === "EV") {
+    Object.assign(v, { fuelType: "ev", fuelGrade: "electricity", cityKwh: KWH_KM(num(r.cityE)), hwyKwh: KWH_KM(num(r.highwayE)), combKwh: KWH_KM(num(r.combE)), rangeKm: Math.round((num(r.range) ?? 0) * 1.609344) || null, engineL: null, cylinders: null });
+    if (!v.cityKwh || !v.hwyKwh) continue;
+  } else if (atv === "Plug-in Hybrid") {
+    const grade = /premium/i.test(r.fuelType1) ? "premium" : "regular";
+    const kwh = KWH_KM(num(r.combE));
+    Object.assign(v, { fuelType: "phev", fuelGrade: grade, cityL: L100(num(r.city08)), hwyL: L100(num(r.highway08)), combL: L100(num(r.comb08)), cityKwh: kwh, hwyKwh: kwh, combKwh: kwh, cdL: 0, electricRangeKm: Math.round((num(r.rangeA) ?? 0) * 1.609344) || null, rangeKm: Math.round((num(r.range) ?? 0) * 1.609344) || null });
+    if (!v.cityL || !v.combKwh || !v.electricRangeKm) continue;
+  } else {
+    const diesel = /diesel/i.test(r.fuelType1);
+    const hybrid = atv === "Hybrid" && !MILD.test(model) && !MILD.test(r.eng_dscr ?? "");
+    Object.assign(v, { fuelType: diesel ? "diesel" : hybrid ? "hybrid" : "gas", fuelGrade: diesel ? "diesel" : /premium|midgrade/i.test(r.fuelType1) ? "premium" : "regular", cityL: L100(num(r.city08)), hwyL: L100(num(r.highway08)), combL: L100(num(r.comb08)) });
+    if (!v.cityL || !v.hwyL) continue;
+    if (v.fuelType === "gas" && HYBRID_ONLY.some(([mk, fam, from]) => mk === make && fam === family && year >= from)) v.fuelType = "hybrid";
+  }
+  v.classBucket = bucket;
+  v.body = bodyType(bucket, model);
+  v.drive = /4-wheel|all-wheel|4wd|awd|part-time/i.test(r.drive) ? "AWD/4WD" : "2WD";
+  v.family = family;
+  v.epaCheck = "exact";
+  if (isNewNameplate) v.availabilityNote = "New for this model year; rated by the US EPA. Check that it is sold in Canada.";
+  const engine = v.fuelType === "ev" ? `Electric${v.motorKw ? `, ${v.motorKw} kW` : ""}` : `${v.engineL ?? "?"} L ${v.cylinders ?? "?"}-cyl${v.fuelType === "phev" ? " plug-in hybrid" : v.fuelType === "hybrid" ? " hybrid" : v.fuelType === "diesel" ? " diesel" : ""}`;
+  const rating = v.fuelType === "ev" ? `${v.combKwh} kWh/100 km` : v.fuelType === "phev" ? `${v.electricRangeKm} km electric` : `${v.combL} L/100 km`;
+  v.version = `${model} · ${engine} · ${transmissionLabel(v.transmission)} · ${rating} (US EPA)`;
+  const key = ["epa", year, make, model, v.engineL, v.cylinders, v.transmission, v.fuelType, v.cityL ?? v.cityKwh, v.hwyL ?? v.hwyKwh, r.drive].join("|");
+  if (seen.has(key)) continue;
+  seen.add(key);
+  v.id = crypto.createHash("sha1").update(key).digest("base64url").slice(0, 10);
+  out.push(v);
+  epaAdded.push(v);
+}
+console.log(`EPA gap fill: added ${epaAdded.length}; skipped`, epaSkipped);
+
 out.sort((a, b) => b.year - a.year || a.make.localeCompare(b.make) || a.model.localeCompare(b.model) || (a.engineL ?? 0) - (b.engineL ?? 0));
 
 fs.mkdirSync("src/data", { recursive: true });
@@ -346,8 +471,12 @@ for (const y of Object.keys(byYear).sort().reverse()) {
   const c = byYear[y];
   md += `| ${y} | ${types.map((t) => c[t]).join(" | ")} | ${types.reduce((s, t) => s + c[t], 0)} |\n`;
 }
-md += `\n## Cross-check against US EPA (fueleconomy.gov)\n\n- Same name found in EPA data: ${epaStats.exact.toLocaleString("en-CA")}\n- Close match (similar name, same engine): ${epaStats.close.toLocaleString("en-CA")}\n- No EPA match (often Canada-only names or trims): ${epaStats.none.toLocaleString("en-CA")}\n\nEPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hybrid", (b) tell small from large SUVs in 2010–2014, where NRCan doesn't split them, and (c) fill the drive type when the name doesn't show it. All consumption numbers are NRCan's.\n\n### Cars changed using EPA data (${epaFixes.length})\n\n`;
+md += `\n## Cross-check against US EPA (fueleconomy.gov)\n\n- Same name found in EPA data: ${epaStats.exact.toLocaleString("en-CA")}\n- Close match (similar name, same engine): ${epaStats.close.toLocaleString("en-CA")}\n- No EPA match (often Canada-only names or trims): ${epaStats.none.toLocaleString("en-CA")}\n\nEPA data was used only to (a) flag full hybrids whose NRCan name doesn't say "hybrid", (b) tell small from large SUVs in 2010–2014, where NRCan doesn't split them, and (c) fill the drive type when the name doesn't show it. Consumption numbers are NRCan's, except for the vehicles listed under "Added from the EPA list" below.\n\n### Cars changed using EPA data (${epaFixes.length})\n\n`;
 md += epaFixes.length ? epaFixes.map((s) => `- ${s}`).join("\n") + "\n" : "None.\n";
+md += `\n## Added from the EPA list (${epaAdded.length} versions)\n\nNRCan rates vehicles through the model year and had not published any 2027 ratings when this ran. Where the US EPA rated a model in a year NRCan has no row for, we added the EPA rating (converted to L/100 km or kWh/100 km), marked "US EPA" on the site. Families must also appear in NRCan in some year (so US-only models are left out), except brand-new 2026–2027 nameplates, which carry a note asking users to check Canadian availability. Skipped: ${epaSkipped.usOnly} rows of US-only models, ${epaSkipped.otherFuel} hydrogen or natural-gas rows, ${epaSkipped.unknownMake} rows from makes not sold in Canada.\n\n`;
+const addedFam = {};
+for (const v of epaAdded) (addedFam[v.year] ??= new Set()).add(`${v.make} ${v.family}${v.availabilityNote ? " (new nameplate)" : ""}`);
+for (const y of Object.keys(addedFam).sort().reverse()) md += `- **${y}:** ${[...addedFam[y]].sort().join(", ")}\n`;
 const byReason = {};
 for (const r of rejected) (byReason[r.reason] ??= []).push(r);
 md += `\n## Rows we did not use (${rejected.length})\n\n`;

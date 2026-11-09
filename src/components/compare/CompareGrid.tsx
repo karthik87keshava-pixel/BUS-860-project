@@ -282,8 +282,14 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
         {name}
       </h2>
       <p className={`text-xs text-muted ${compact ? "hidden" : ""}`}>
-        {FUEL_LABEL[v.fuelType]} · {v.version.split(" · ").slice(1).join(" · ")}
+        {FUEL_LABEL[v.fuelType]} · {v.version.replace(" (US EPA)", "").split(" · ").slice(1).join(" · ")}
       </p>
+      {v.ratingSource === "EPA" && (
+        <p className={`text-[11px] text-muted ${compact ? "hidden" : ""}`}>
+          Fuel rating from the US EPA (NRCan hasn&rsquo;t published this one yet).
+          {v.availabilityNote && <span className="block text-warn">{v.availabilityNote}</span>}
+        </p>
+      )}
       <div className={`flex flex-wrap items-center gap-2 ${compact ? "mt-1" : "mt-3"}`}>
         <div className="inline-flex rounded-full border border-line p-0.5 text-xs" role="group" aria-label={`Payment option for ${name}`}>
           {(["loan", "lease", "cash"] as const).map((p) => (

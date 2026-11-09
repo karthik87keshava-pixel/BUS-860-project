@@ -118,7 +118,23 @@ const statusByYear = {};
 for (const v of vehicles) {
   const found = pickAnchor(v);
   if (!found) {
-    stats.missing++;
+    // No base price for this model (e.g. a brand-new nameplate): median price of the same make and size class
+    const peers = vehicles.filter((o) => o !== v && o.make === v.make && o.classBucket === v.classBucket && o.msrp && o.year >= v.year - 3);
+    const pool = peers.length ? peers : vehicles.filter((o) => o.classBucket === v.classBucket && o.msrp && o.year >= v.year - 3);
+    const prices = pool.map((o) => o.msrp).sort((a, b) => a - b);
+    if (!prices.length) {
+      stats.missing++;
+      continue;
+    }
+    v.msrp = round(prices[Math.floor(prices.length / 2)]);
+    v.msrpStatus = "estimate";
+    v.msrpBasis = `no base price for this model yet; median of ${peers.length ? `${v.make} ` : ""}${v.classBucket} prices`;
+    delete v.msrpSource;
+    delete v.msrpSourceUrl;
+    delete v.msrpChecked;
+    stats.estimate++;
+    statusByYear[v.year] ??= { verified: 0, estimate: 0 };
+    statusByYear[v.year].estimate++;
     continue;
   }
   const { anchor, specific, fuelMatched } = found;

@@ -113,7 +113,11 @@ export default function HowWeCalculate() {
       <p>
         We cross-check every row against the US EPA&rsquo;s <A href="https://www.fueleconomy.gov/feg/download.shtml">fueleconomy.gov</A> data to flag full
         hybrids whose NRCan name doesn&rsquo;t say &ldquo;hybrid&rdquo;, to split small and large SUVs for 2010–2014 (NRCan doesn&rsquo;t), and to fill in
-        drive type. The consumption numbers are always NRCan&rsquo;s. Flex-fuel vehicles keep their gasoline rating; their E85 rating is not used. A
+        drive type. NRCan rates vehicles through each model year and had not published 2027 ratings yet, so where the EPA rated a model in a
+        year NRCan has no row for, we add the EPA rating (converted to L/100 km or kWh/100 km) and say so on the site: 2027 models on
+        sale this fall and a few earlier gaps. Models never rated by NRCan in any year are treated as US-only and left out, except brand-new
+        2026–2027 nameplates, which carry a note to check that they are sold in Canada. Everywhere else the consumption numbers are
+        NRCan&rsquo;s. Flex-fuel vehicles keep their gasoline rating; their E85 rating is not used. A
         script (<code>npm run data:refresh</code>) repeats the whole import each year and writes a coverage report listing every row it couldn&rsquo;t use.
       </p>
       <H3>Prices</H3>

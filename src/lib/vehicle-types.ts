@@ -19,6 +19,8 @@ export interface Vehicle extends VehicleFacts {
   msrpSource?: string;
   msrpSourceUrl?: string;
   msrpChecked?: string;
+  ratingSource?: "EPA"; // set when the fuel rating comes from the US EPA because NRCan has not rated the vehicle
+  availabilityNote?: string; // brand-new nameplates: check that it is sold in Canada
 }
 
 export interface Photo {

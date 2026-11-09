@@ -14,10 +14,13 @@ import type { ColumnInputs, Condition, Payment, SharedInputs, VehicleFacts } fro
 
 export type Overrides = Partial<ColumnInputs>;
 
-/** New if this is the newest model year of the family in the data (and recent); otherwise bought used. */
+/**
+ * New if the model year is the current one or later (in late 2026, both 2026 and 2027 models are sold new),
+ * or last year's model when it is still the newest one of that family; otherwise bought used.
+ */
 export function defaultCondition(v: VehicleFacts, currentYear: number): Condition {
   const latest = v.latestFamilyYear ?? v.year;
-  return v.year >= latest && v.year >= currentYear - 1 ? "new" : "used";
+  return v.year >= currentYear || (v.year >= latest && v.year >= currentYear - 1) ? "new" : "used";
 }
 
 /** Approximate age in years when bought: a 2025 model bought in late 2026 is about 1.75 years old. */

@@ -860,3 +860,40 @@ smart,fortwo,2018,18000,gas,,
 smart,fortwo,2018,30000,ev,,
 smart EQ,fortwo,2019,30000,,,
 Tesla,Cybertruck,2025,137990,,AWD,Dual-motor AWD launch price
+Audi,Q9,2027,110000,,,new 2027 nameplate
+Audi,SQ9,2027,135000,,,new 2027 nameplate
+Bugatti,Nevera,2025,2600000,,,Rimac Nevera
+Ferrari,Amalfi,2026,330000,,,
+Infiniti,QX65,2027,65000,,,new 2027 nameplate
+Kia,EV3,2027,42000,,,new 2027 nameplate
+Lexus,TZ,2027,95000,,,new 2027 nameplate
+Lotus,Emira,2026,125000,,,
+Lucid,Gravity,2026,115000,,,
+Maserati,MCPURA,2026,320000,,,
+McLaren,540C,2018,210000,,,
+McLaren,570GT,2019,230000,,,
+McLaren,570S,2019,240000,,,
+McLaren,600LT,2020,290000,,,
+McLaren,620R,2020,340000,,,
+McLaren,650S,2016,330000,,,
+McLaren,650S Can-Am,2016,400000,,,
+McLaren,675LT,2017,400000,,,
+McLaren,720S,2023,380000,,,
+McLaren,720S Coupe LM,2021,430000,,,
+McLaren,765LT,2022,450000,,,
+McLaren,Artura,2026,300000,,,
+McLaren,Elva,2021,2100000,,,
+McLaren,GT,2024,260000,,,
+McLaren,MP4-12C,2013,260000,,,
+McLaren,MSO HS,2016,1000000,,,
+McLaren,P1,2015,1400000,,,
+McLaren,Sabre,2021,4000000,,,
+McLaren,Senna,2019,1300000,,,
+McLaren,Speedtail,2020,3000000,,,
+Mitsubishi,Eclipse Sportback,2027,45000,,,new 2027 electric nameplate
+Rivian,R2,2027,65000,,,new 2027 nameplate
+Saab,9-3,2011,35000,,,
+Saab,9-3X,2011,40000,,,
+Saab,9-4X,2011,45000,,,
+Saab,9-5,2011,50000,,,
+Volvo,EX60,2027,70000,,,new 2027 nameplate
