@@ -33,6 +33,8 @@ Every assumption, data source and design choice, with the date. Sources for each
 
 - **2026-11-09** — Statistics Canada price index loaded (www150.statcan.gc.ca allowed). The annual table 18-10-0005-01 has "Purchase of passenger vehicles" (new and used together), not a new-only series, so that is what we use. Index 2010 = 90.8, 2015 = 95.8, 2020 = 108.4, 2025 = 129.5 (2002 = 100). Spot checks of resulting MSRPs: 2015 Civic $20,700 (actual ≈ $20,000), 2019 RAV4 $27,000 (≈ $28,000), 2012 Camry $23,500 (≈ $24,000).
 
+- **2026-11-09** — 11 more verified 2026 prices added (Ram 1500, Pilot, Accord gas and hybrid, Sienna, Highlander, Palisade, Outback, Escape, Compass, Wrangler). Skipped because sources disagree: Maverick, Equinox EV. Kia skipped the 2026 Telluride model year, so its 2025 price stays an estimate.
+
 ## Photos
 
 - **2026-10-28** — Lead image of the "<Make> <Model>" Wikipedia article, used only if its Commons licence is Creative Commons or public domain; photographer and licence shown under the photo with links. One photo per model family (not per year/trim) for the November version. No free photo → a drawn body-type outline (sedan, SUV, truck, hatchback, van, wagon, coupe, convertible).
