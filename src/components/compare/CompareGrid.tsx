@@ -55,7 +55,9 @@ export function CompareGrid({
   lowest,
   onAdd,
   showDifferences,
+  controls,
 }: {
+  controls?: React.ReactNode; // switches that act on the table
   cols: Col[];
   shared: SharedInputs;
   lowest: { index: number; basis: "net" | "running" } | null;
@@ -69,6 +71,7 @@ export function CompareGrid({
   const bodyRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
+  const [monthly, setMonthly] = useState(false); // headline numbers per month instead of for the whole period
 
   // Once the page has scrolled past the top of the column headers, the sticky header shrinks to name + payment option
   // Hysteresis: when the header shrinks, the browser keeps the content in place by scrolling up by the height it lost,
@@ -125,8 +128,12 @@ export function CompareGrid({
   const slots = Math.min(MAX_COLUMNS, cols.length + (cols.length < MAX_COLUMNS ? 1 : 0));
   // Desktop: label column + one column per slot. Phones: no label column (labels sit above each row).
   const gridStyle = { "--slots": slots } as React.CSSProperties;
-  const gridClass =
-    "grid grid-cols-[repeat(var(--slots),78vw)] sm:grid-cols-[repeat(var(--slots),320px)] lg:grid-cols-[220px_repeat(var(--slots),minmax(0,1fr))]";
+  // Phones: one or two cars fit side by side without swiping; three or four scroll sideways.
+  const fit = cols.length <= 2;
+  const gridClass = `grid ${fit ? (cols.length ? "grid-cols-2" : "grid-cols-1") : "grid-cols-[repeat(var(--slots),78vw)]"} sm:grid-cols-[repeat(var(--slots),320px)] lg:grid-cols-[220px_repeat(var(--slots),minmax(0,1fr))]`;
+  const wide = fit ? "w-full sm:w-max sm:min-w-full lg:w-auto" : "w-max min-w-full lg:w-auto";
+  // With two cars on a phone the "Add vehicle" slot moves to its own button below the headers
+  const addCell = cols.length === 2 ? "hidden sm:block" : "";
 
   const sections = buildSections(shared, units);
   const years = shared.years;
@@ -148,7 +155,7 @@ export function CompareGrid({
       <div className="sticky top-0 z-30 border-b border-line bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] print:static">
         {/* Phones and tablets: buttons to move between columns (swiping works too) */}
         {cols.length > 0 && (
-          <div className="no-print mx-auto flex max-w-7xl items-center justify-between px-4 pt-2 text-xs text-muted sm:px-6 lg:hidden">
+          <div className={`no-print mx-auto max-w-7xl items-center justify-between px-4 pt-2 text-xs text-muted sm:px-6 lg:hidden ${fit ? "hidden sm:flex" : "flex"}`}>
             <span>Swipe or tap the arrows to see each vehicle</span>
             <span className="flex gap-2">
               {([-1, 1] as const).map((dir) => (
@@ -170,7 +177,7 @@ export function CompareGrid({
           </div>
         )}
         <div ref={headRef} className="no-scrollbar mx-auto max-w-7xl overflow-x-auto px-4 sm:px-6 print:overflow-visible">
-          <div className={`w-max min-w-full lg:w-auto ${gridClass}`} style={gridStyle}>
+          <div className={`${wide} ${gridClass}`} style={gridStyle}>
             <div className="hidden items-end pb-4 text-sm text-muted lg:flex">
               {cols.length ? `${years}-year cost, Alberta` : "Add up to four vehicles to compare."}
             </div>
@@ -178,7 +185,7 @@ export function CompareGrid({
               <ColumnHeader key={c.key} c={c} compact={compact} isLowest={lowest?.index === i && cols.length > 1} basis={lowest?.basis} />
             ))}
             {cols.length < MAX_COLUMNS && (
-              <div className={`snap-start pr-3 ${compact ? "py-2" : "py-4"}`}>
+              <div className={`snap-start px-2 sm:px-3 ${addCell} ${compact ? "py-2" : "py-4"}`}>
                 <button
                   type="button"
                   onClick={onAdd}
@@ -190,6 +197,11 @@ export function CompareGrid({
               </div>
             )}
           </div>
+          {cols.length === 2 && !compact && (
+            <button type="button" onClick={onAdd} className="no-print mb-3 w-full rounded-xl border-2 border-dashed border-line py-2 text-sm font-medium text-muted hover:border-fg hover:text-fg sm:hidden">
+              + Add another vehicle
+            </button>
+          )}
         </div>
       </div>
 
@@ -198,10 +210,21 @@ export function CompareGrid({
           <p className="py-16 text-center text-muted">Your comparison is empty. Use “Add vehicle” to start.</p>
         ) : (
           // As wide as all the columns, so row lines run the full width when scrolled sideways
-          <div className="w-max min-w-full lg:w-auto">
+          <div className={wide}>
             {/* Summary block, always open */}
-            <SummaryRows cols={cols} gridClass={gridClass} gridStyle={gridStyle} units={units} years={years} lowest={lowest} />
-            <div className="no-print sticky left-0 flex w-[calc(100vw-2rem)] items-center justify-between border-t border-fg py-3 sm:w-auto">
+            <div className="no-print sticky left-0 flex w-[calc(100vw-2rem)] items-center gap-3 pt-3 text-xs sm:w-auto">
+              <span className="text-muted">Show the cost</span>
+              <div className="inline-flex rounded-full border border-line p-0.5" role="group" aria-label="Show the cost for the whole period or per month">
+                {[false, true].map((m) => (
+                  <button key={String(m)} type="button" aria-pressed={monthly === m} onClick={() => setMonthly(m)} className={`rounded-full px-3 py-1 ${monthly === m ? "bg-accent text-white" : "text-muted hover:text-fg"}`}>
+                    {m ? "Per month" : `Over ${years} year${years > 1 ? "s" : ""}`}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <SummaryRows cols={cols} gridClass={gridClass} gridStyle={gridStyle} units={units} years={years} lowest={lowest} monthly={monthly} addCell={addCell} />
+            {controls && <div className="no-print sticky left-0 flex w-[calc(100vw-2rem)] flex-wrap items-center gap-x-8 gap-y-3 border-t border-fg py-3 sm:w-auto">{controls}</div>}
+            <div className="no-print sticky left-0 flex w-[calc(100vw-2rem)] items-center justify-between border-t border-line py-3 sm:w-auto">
               <p className="text-xs text-muted">
                 <span className="mr-1 inline-block rounded-md border border-zinc-300 bg-zinc-50 px-1.5 align-middle">$ 0</span> boxes are numbers you can change; plain
                 numbers are calculated.
@@ -237,8 +260,8 @@ export function CompareGrid({
                       <Chevron open={isOpen} />
                     </button>
                   </h3>
-                  {isOpen && rows.map((r) => <GridRow key={r.id} r={r} cols={cols} gridClass={gridClass} gridStyle={gridStyle} />)}
-                  <GridRow r={s.subtotal} cols={cols} gridClass={gridClass} gridStyle={gridStyle} subtotal />
+                  {isOpen && rows.map((r) => <GridRow key={r.id} r={r} cols={cols} gridClass={gridClass} gridStyle={gridStyle} addCell={addCell} />)}
+                  <GridRow r={s.subtotal} cols={cols} gridClass={gridClass} gridStyle={gridStyle} addCell={addCell} subtotal />
                 </section>
               );
             })}
@@ -249,7 +272,7 @@ export function CompareGrid({
   );
 }
 
-function GridRow({ r, cols, gridClass, gridStyle, subtotal }: { r: Row; cols: Col[]; gridClass: string; gridStyle: React.CSSProperties; subtotal?: boolean }) {
+function GridRow({ r, cols, gridClass, gridStyle, subtotal, addCell }: { r: Row; cols: Col[]; gridClass: string; gridStyle: React.CSSProperties; subtotal?: boolean; addCell: string }) {
   return (
     <div className={subtotal ? "border-t border-line bg-soft font-semibold" : "border-t border-line"}>
       <div className="sticky left-0 w-[calc(100vw-2rem)] pr-2 pt-3 text-xs font-medium text-muted sm:w-auto lg:hidden">
@@ -262,11 +285,11 @@ function GridRow({ r, cols, gridClass, gridStyle, subtotal }: { r: Row; cols: Co
           {r.tip && <InfoTip>{r.tip}</InfoTip>}
         </div>
         {cols.map((c) => (
-          <div key={c.key} className={`snap-start py-3 pr-3 text-sm ${r.strong ? "font-semibold" : ""}`}>
+          <div key={c.key} className={`min-w-0 snap-start px-2 py-3 text-sm sm:px-3 ${r.strong ? "font-semibold" : ""}`}>
             {!r.applies || r.applies(c) ? r.cell(c) : <span className="font-normal text-muted">—</span>}
           </div>
         ))}
-        {cols.length < MAX_COLUMNS && <div />}
+        {cols.length < MAX_COLUMNS && <div className={addCell} />}
       </div>
     </div>
   );
@@ -276,7 +299,7 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
   const { v } = c;
   const name = displayName(v);
   return (
-    <div className={`relative snap-start pr-3 ${compact ? "py-2" : "pb-4 pt-4"}`}>
+    <div className={`relative min-w-0 snap-start px-2 sm:px-3 ${isLowest ? "rounded-t-xl bg-accent-soft" : ""} ${compact ? "py-2" : "pb-4 pt-4"}`}>
       <button
         type="button"
         onClick={c.remove}
@@ -325,6 +348,7 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
           {v.availabilityNote && <span className="block text-warn">{v.availabilityNote}</span>}
         </p>
       )}
+      <p className={`text-[11px] ${compact ? "hidden" : ""} ${priceTag(c).verified ? "font-medium text-accent" : "text-muted"}`}>{priceTag(c).text}</p>
       <div className={`flex flex-wrap items-center gap-2 ${compact ? "mt-1" : "mt-3"}`}>
         <div className="inline-flex rounded-full border border-line p-0.5 text-xs" role="group" aria-label={`Payment option for ${name}`}>
           {(["loan", "lease", "cash"] as const).map((p) => (
@@ -333,16 +357,30 @@ function ColumnHeader({ c, isLowest, basis, compact }: { c: Col; isLowest: boole
               type="button"
               aria-pressed={c.inputs.payment === p}
               onClick={() => c.setPayment(p)}
-              className={`rounded-full px-3 py-1 capitalize ${c.inputs.payment === p ? "bg-accent text-white" : "text-muted hover:text-fg print:hidden"}`}
+              className={`rounded-full px-2 py-1 capitalize sm:px-3 ${c.inputs.payment === p ? "bg-accent text-white" : "text-muted hover:text-fg print:hidden"}`}
             >
               {p}
             </button>
           ))}
         </div>
-        {/* A label, not a button */}
-        <span className="cursor-default select-none rounded-full bg-zinc-200 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-zinc-700">
-          {c.inputs.condition === "new" ? "New" : "Used"}
-        </span>
+        {/* New or used changes the price, fees and loan rate, so it is a clear choice (leases are always new) */}
+        {c.inputs.payment === "lease" ? (
+          <span className="rounded-full border border-line px-2.5 py-1 text-xs text-muted">New (lease)</span>
+        ) : (
+          <div className="inline-flex rounded-full border border-line p-0.5 text-xs" role="group" aria-label={`New or used, ${name}`}>
+            {(["new", "used"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                aria-pressed={c.inputs.condition === k}
+                onClick={() => c.setOverride("condition", k)}
+                className={`rounded-full px-2 py-1 capitalize sm:px-3 ${c.inputs.condition === k ? "bg-fg text-white" : "text-muted hover:text-fg print:hidden"}`}
+              >
+                {k}
+              </button>
+            ))}
+          </div>
+        )}
         {isLowest && (
           <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-white" title={basis === "running" ? "Lowest running costs" : "Lowest net cost"}>
             Lowest cost
@@ -360,7 +398,11 @@ function SummaryRows({
   units,
   years,
   lowest,
+  monthly,
+  addCell,
 }: {
+  monthly: boolean;
+  addCell: string;
   cols: Col[];
   gridClass: string;
   gridStyle: React.CSSProperties;
@@ -371,23 +413,27 @@ function SummaryRows({
   const names = shortNames(cols.map((c) => ({ v: c.v, payment: c.inputs.payment })));
   const metric = (c: Col) => (lowest?.basis === "running" ? c.result.runningCost : c.result.netCost);
   const best = lowest && cols.length > 1 ? cols[lowest.index] : null;
+  const period = `${years} year${years > 1 ? "s" : ""}`;
+  const per = (c: Col, v: number) => (monthly ? v / c.result.months : v);
   const rows: { label: string; val: (c: Col) => React.ReactNode }[] = [
     {
-      label: "Net cost after resale",
+      label: monthly ? "Your real cost per month" : `Your real cost over ${period}`,
       val: (c) => (
         <>
-          <span className="text-2xl font-bold tracking-tight">{money(c.result.netCost)}</span>
+          <span className="text-2xl font-bold tracking-tight">{money(monthly ? c.result.perMonth : c.result.netCost)}</span>
           {c.result.priceExcluded ? (
             <span className="mt-1 block text-xs font-normal text-warn">Purchase price not included — compare running costs for like-for-like.</span>
+          ) : c.result.resaleValue ? (
+            <span className="mt-1 block text-xs font-normal text-muted">after selling the car at the end</span>
           ) : (
-            !c.result.resaleValue && <span className="mt-1 block text-xs font-normal text-muted">No resale (lease)</span>
+            <span className="mt-1 block text-xs font-normal text-muted">No resale (lease)</span>
           )}
           {best === c && (
             <ul className="mt-1 space-y-0.5 text-xs font-medium text-accent">
               {cols.map((o, j) =>
                 o === c ? null : (
                   <li key={o.key}>
-                    {money(metric(o) - metric(c))} less {lowest?.basis === "running" ? "to run " : ""}than {names[j]}
+                    {money(per(c, metric(o) - metric(c)))} less {monthly ? "a month " : ""}{lowest?.basis === "running" ? "to run " : ""}than {names[j]}
                   </li>
                 ),
               )}
@@ -396,8 +442,8 @@ function SummaryRows({
         </>
       ),
     },
-    { label: `Total cost, ${years} years (before resale)`, val: (c) => <span className="text-muted">{money(c.result.totalCost)}</span> },
-    { label: "Per month", val: (c) => money(c.result.perMonth) },
+    monthly ? { label: `Over ${period}`, val: (c) => money(c.result.netCost) } : { label: "Per month", val: (c) => money(c.result.perMonth) },
+    { label: `Total paid over ${period}, before selling`, val: (c) => <span className="text-muted">{money(c.result.totalCost)}</span> },
     { label: units === "km" ? "Per kilometre" : "Per mile", val: (c) => perDistance(c.result.perKm, units) },
     { label: "Running costs only", val: (c) => money(c.result.runningCost) },
   ];
@@ -409,17 +455,17 @@ function SummaryRows({
           <div className={gridClass} style={gridStyle}>
             <div className="hidden py-3 pr-4 text-sm lg:block">{r.label}</div>
             {cols.map((c) => (
-              <div key={c.key} className="snap-start py-3 pr-3 text-sm">
+              <div key={c.key} className={`min-w-0 snap-start px-2 py-3 text-sm sm:px-3 ${best === c ? "bg-accent-soft" : ""}`}>
                 {r.val(c)}
               </div>
             ))}
-            {cols.length < MAX_COLUMNS && <div />}
+            {cols.length < MAX_COLUMNS && <div className={addCell} />}
           </div>
         </div>
       ))}
       {lowest && cols.length > 1 && (
         <p className="sticky left-0 pt-2 text-xs text-muted">
-          “Lowest cost” compares {lowest.basis === "net" ? "net cost after resale" : "running costs only, because a cash column leaves out its purchase price"}.
+          “Lowest cost” compares {lowest.basis === "net" ? "your real cost: everything you pay, less what the car sells for at the end (net cost)" : "running costs only, because a cash column leaves out its purchase price"}.
         </p>
       )}
     </div>
@@ -721,9 +767,16 @@ function buildSections(shared: SharedInputs, units: Units): Section[] {
       text: (c) => String(c.result.paymentsInPeriod),
     },
     running: { id: "sub-running", label: "Running costs total", cell: (c) => money(c.result.runningCost), text: (c) => String(c.result.runningCost) },
-    end: { id: "sub-end", label: "Net cost after resale", cell: (c) => money(c.result.netCost), text: (c) => String(c.result.netCost) },
+    end: { id: "sub-end", label: "Your real cost (net cost after resale)", cell: (c) => money(c.result.netCost), text: (c) => String(c.result.netCost) },
   };
   return list.map((sec) => ({ ...sec, rows: sec.rows.filter((r) => r.id !== "runningTotal" && r.id !== "net"), subtotal: subtotals[sec.id] }));
+}
+
+/** The price label under a car's name: verified, estimated, used or changed by the user. */
+function priceTag(c: Col): { text: string; verified: boolean } {
+  if ("price" in c.overrides) return { text: "Your price", verified: false };
+  if (c.inputs.condition === "used") return { text: "Estimated used price", verified: false };
+  return c.v.msrpStatus === "verified" ? { text: "✓ Verified price", verified: true } : { text: "Estimated price", verified: false };
 }
 
 function Total({ total, first }: { total: number; first?: number }) {

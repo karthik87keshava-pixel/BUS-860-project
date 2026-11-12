@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { calculateColumn, defaultShared, lowestCost, resolveColumn, type ColumnInputs, type Payment, type SharedInputs } from "@/lib/calc";
 import { displayName, shortNames } from "@/lib/names";
 import { decodeState, emptyState, encodeState, MAX_COLUMNS, type ComparisonState } from "@/lib/state";
+import { CHARGING, regionLabel, trafficLabel } from "@/lib/questionnaire";
 import { summarySentence } from "@/lib/summary";
 import { supabase, isSupabaseConfigured, useSession } from "@/lib/supabase";
 import type { Photo, Vehicle } from "@/lib/vehicle-types";
@@ -12,11 +13,14 @@ import { AddVehicle } from "./AddVehicle";
 import { CompareGrid, type Col } from "./CompareGrid";
 import { Toggle } from "./controls";
 import { CostChart } from "./CostChart";
+import { MoneyChart } from "./MoneyChart";
+import { Questionnaire } from "./Questionnaire";
 import { SharedPanel } from "./SharedPanel";
 
 type VehicleWithPhoto = Vehicle & { photo?: Photo | null };
 
 const DRAFT_KEY = "fairdrive-draft";
+const ASKED_KEY = "fairdrive-asked"; // the questionnaire opens by itself only once per browser
 const CURRENT_YEAR = 2026;
 
 export function CompareTool() {
@@ -31,6 +35,10 @@ export function CompareTool() {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [savedName, setSavedName] = useState("");
   const [message, setMessage] = useState("");
+  const [asking, setAsking] = useState(false);
+  const [askAfterAdd, setAskAfterAdd] = useState(false);
+  const [fineTune, setFineTune] = useState(false);
+  const startQuery = params.get("q") ?? "";
 
   // ---- load: share link (?s=), saved comparison (?id=), or this browser's last draft ----
   useEffect(() => {
@@ -59,12 +67,21 @@ export function CompareTool() {
       setState(fromUrl);
       setLoaded(true);
     } else {
+      let draft: ComparisonState | null = null;
+      let asked = false;
       try {
-        const draft = decodeState(localStorage.getItem(DRAFT_KEY));
-        if (draft) setState(draft);
+        draft = decodeState(localStorage.getItem(DRAFT_KEY));
+        asked = localStorage.getItem(ASKED_KEY) === "1";
       } catch {
         // storage blocked
       }
+      if (draft) setState(draft);
+      // A new visitor: the questions come first, or right after the car typed on the home page is added
+      const fresh = !asked && !(draft && (draft.columns.length || Object.keys(draft.shared).length));
+      if (startQuery) {
+        setAdding(true);
+        setAskAfterAdd(fresh);
+      } else if (fresh) setAsking(true);
       setLoaded(true);
     }
     // only on first load
@@ -77,6 +94,7 @@ export function CompareTool() {
     const encoded = encodeState(state);
     const url = new URL(window.location.href);
     url.searchParams.set("s", encoded);
+    url.searchParams.delete("q");
     if (savedId) url.searchParams.set("id", savedId);
     else url.searchParams.delete("id");
     window.history.replaceState(null, "", url.toString());
@@ -156,7 +174,26 @@ export function CompareTool() {
       return s;
     });
     setAdding(false);
+    if (askAfterAdd) {
+      setAskAfterAdd(false);
+      setAsking(true);
+    }
   };
+
+  const closeQuestions = () => {
+    setAsking(false);
+    try {
+      localStorage.setItem(ASKED_KEY, "1");
+    } catch {
+      // ignore
+    }
+  };
+  const applyAnswers = (patch: Partial<SharedInputs>, region?: string) =>
+    update((s) => {
+      Object.assign(s.shared, patch);
+      if (region) s.answers = { ...s.answers, region };
+      return s;
+    });
 
   const copyLink = async () => {
     const url = new URL(window.location.href);
@@ -208,6 +245,29 @@ export function CompareTool() {
 
   const short = shortNames(cols.map((c) => ({ v: c.v, payment: c.inputs.payment })));
   const names = cols.map((c, i) => `${i + 1}. ${c.v.year} ${short[i]} (${c.inputs.payment})`);
+  const hasPlugIn = cols.some((c) => c.v.fuelType === "ev" || c.v.fuelType === "phev");
+  const kmYear = Math.round(shared.kmMode === "yearly" ? shared.kmPerYear : shared.kmPerDay * shared.daysPerWeek * 52);
+  const drivingLine = [
+    shared.kmMode === "daily" ? `${Math.round(shared.kmPerDay)} km a day` : `${kmYear.toLocaleString("en-CA")} km a year`,
+    trafficLabel(shared.cityShare),
+    `${shared.years} year${shared.years > 1 ? "s" : ""}`,
+    regionLabel(state.answers?.region, shared.winterMonths),
+    ...(hasPlugIn ? [shared.homeCharging ? "home charging" : "no home charging"] : []),
+  ].join(" · ");
+  // Net cost split into parts for the "Where the money goes" bars (sums of existing results only)
+  const money = cols.map((c, i) => {
+    const r = c.result;
+    const sum = (k: "energy" | "insurance" | "maintenance" | "repairs") => r.years.reduce((a, y) => a + y[k], 0);
+    const energy = sum("energy");
+    const insurance = sum("insurance");
+    const upkeep = sum("maintenance") + sum("repairs");
+    return {
+      name: `${c.v.year} ${short[i]}`,
+      total: r.netCost,
+      parts: [r.ownershipCost - r.interestPaid - r.resaleValue, r.interestPaid, energy, insurance, upkeep, r.runningCost - energy - insurance - upkeep],
+      note: r.priceExcluded ? "Purchase price not included (cash)." : c.inputs.payment === "lease" ? "Lease: the first part is the lease payments and fees." : undefined,
+    };
+  });
   const summary = summarySentence(
     cols.map((c, i) => ({ fullName: displayName(c.v), shortName: short[i], result: c.result })),
     shared.years,
@@ -224,7 +284,21 @@ export function CompareTool() {
               Alberta, {shared.years}-year cost. Pre-filled numbers are estimates — click any number to change it.
             </p>
           </div>
-          <div className="no-print flex flex-wrap items-center gap-2 text-sm">
+          <details className="no-print relative text-sm sm:hidden">
+            <summary className="cursor-pointer list-none rounded-full border border-line px-4 py-2 font-medium [&::-webkit-details-marker]:hidden">Save or share</summary>
+            <div className="absolute left-0 z-40 mt-2 flex w-56 flex-col gap-1 rounded-xl border border-line bg-white p-2 shadow-lg">
+              <button type="button" onClick={save} disabled={!cols.length} className="rounded-lg px-3 py-2 text-left font-medium text-accent hover:bg-accent-soft disabled:opacity-40">
+                {session ? (savedId ? "Save changes" : "Save") : "Sign in to save"}
+              </button>
+              <button type="button" onClick={copyLink} disabled={!cols.length} className="rounded-lg px-3 py-2 text-left hover:bg-soft disabled:opacity-40">
+                Copy share link
+              </button>
+              <button type="button" onClick={() => window.print()} disabled={!cols.length} className="rounded-lg px-3 py-2 text-left hover:bg-soft disabled:opacity-40">
+                Print / PDF
+              </button>
+            </div>
+          </details>
+          <div className="no-print hidden flex-wrap items-center gap-2 text-sm sm:flex">
             <button type="button" onClick={copyLink} disabled={!cols.length} className="rounded-full border border-line px-4 py-2 hover:border-fg disabled:opacity-40">
               Share link
             </button>
@@ -255,13 +329,7 @@ export function CompareTool() {
         </p>
       </div>
 
-      <SharedPanel shared={shared} changed={state.shared} set={setShared} reset={resetShared} />
-
-      <div className="no-print mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-4 sm:px-6">
-        <Toggle checked={differences} onChange={setDifferences} label="Show differences only" />
-        <Toggle checked={shared.includeCashPrice} onChange={(v) => setShared("includeCashPrice", v)} label="Include purchase price for cash" />
-        {loading && <span className="text-sm text-muted">Loading vehicles…</span>}
-      </div>
+      {loading && <p className="mx-auto max-w-7xl px-4 text-sm text-muted sm:px-6">Loading vehicles…</p>}
 
       {/* Plain-English summary, based on net cost after resale (the same number the "Lowest cost" badge uses) */}
       {summary && (
@@ -272,20 +340,78 @@ export function CompareTool() {
         </div>
       )}
 
-      <CompareGrid cols={cols} shared={shared} lowest={lowest} onAdd={() => setAdding(true)} showDifferences={differences} />
+      {/* Your driving, in one line: the questionnaire's answers (or the Alberta averages) */}
+      <div className="no-print mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 text-sm sm:px-6">
+        <p>
+          <span className="font-semibold">Your driving:</span> <span className="text-muted">{drivingLine}</span>
+        </p>
+        <button type="button" onClick={() => setAsking(true)} className="font-medium text-accent underline underline-offset-2 hover:text-accent-strong">
+          Change answers
+        </button>
+        <a href="#fine-tune" onClick={() => setFineTune(true)} className="text-accent underline underline-offset-2 hover:text-accent-strong">
+          Fine-tune the numbers
+        </a>
+      </div>
+
+      {/* Asked only once an electric or plug-in car is in the comparison */}
+      {hasPlugIn && !("homeCharging" in state.shared) && (
+        <div className="no-print mx-auto max-w-7xl px-4 pb-3 sm:px-6">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-accent-soft px-4 py-3 text-sm" role="group" aria-label="Can you charge at home?">
+            <span className="font-semibold">Can you charge at home?</span>
+            {CHARGING.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                title={o.hint}
+                onClick={() => applyAnswers(o.homeCharging ? { homeCharging: true, homeChargeShare: o.homeChargeShare } : { homeCharging: false })}
+                className="rounded-full border border-accent bg-white px-4 py-1.5 font-medium text-accent hover:bg-accent hover:text-white"
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <CompareGrid
+        cols={cols}
+        shared={shared}
+        lowest={lowest}
+        onAdd={() => setAdding(true)}
+        showDifferences={differences}
+        controls={
+          <>
+            <Toggle checked={differences} onChange={setDifferences} label="Show differences only" />
+            <Toggle checked={shared.includeCashPrice} onChange={(v) => setShared("includeCashPrice", v)} label="Include purchase price for cash" />
+          </>
+        }
+      />
+
+      {cols.length > 0 && <MoneyChart cars={money} years={shared.years} />}
 
       {cols.length > 0 && <CostChart names={names} labels={short} cumulative={cols.map((c) => c.result.cumulative)} />}
+
+      <SharedPanel shared={shared} changed={state.shared} set={setShared} reset={resetShared} open={fineTune} setOpen={setFineTune} />
 
       <p className="mx-auto max-w-7xl px-4 pt-8 text-xs text-muted sm:px-6">
         How every number is worked out: <Link href="/how-we-calculate" className="text-accent underline underline-offset-2">How we calculate</Link>.
       </p>
 
-      <AddVehicle open={adding} onClose={() => setAdding(false)} onAdd={addVehicle} />
+      <AddVehicle open={adding} onClose={() => setAdding(false)} onAdd={addVehicle} initialQuery={startQuery} />
+      <Questionnaire
+        open={asking}
+        onClose={closeQuestions}
+        shared={shared}
+        changed={state.shared}
+        region={state.answers?.region}
+        askCharging={hasPlugIn}
+        apply={applyAnswers}
+      />
     </div>
   );
 }
 
 function decodeStateObject(s: unknown): ComparisonState {
   const st = s as ComparisonState;
-  return st && st.v === 1 && Array.isArray(st.columns) ? { v: 1, shared: st.shared ?? {}, columns: st.columns.slice(0, MAX_COLUMNS) } : emptyState();
+  return st && st.v === 1 && Array.isArray(st.columns) ? { v: 1, shared: st.shared ?? {}, columns: st.columns.slice(0, MAX_COLUMNS), ...(st.answers ? { answers: st.answers } : {}) } : emptyState();
 }

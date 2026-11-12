@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BodyOutline } from "@/components/compare/BodyOutline";
+import { HomeSearch } from "@/components/HomeSearch";
 import { exampleCards, exampleHref } from "@/lib/example";
 import { money } from "@/lib/format";
 import { TAGLINE } from "@/lib/site";
@@ -26,16 +27,13 @@ export default async function Home() {
             Compare up to four cars side by side — loan, lease or cash — over the years you plan to keep them. We add up the price, GST,
             payments, fuel or electricity, insurance, maintenance, tires and registration, then take off what the car is worth at the end.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/compare" className="rounded-full bg-accent px-7 py-3.5 text-base font-medium text-white hover:bg-accent-strong">
-              Start a comparison
-            </Link>
-            <Link href={href} className="rounded-full border border-accent px-7 py-3.5 text-base font-medium text-accent hover:bg-accent-soft">
-              Try an example
-            </Link>
-          </div>
+          <HomeSearch />
           <p className="mt-4 text-sm text-muted">
-            No account needed.{" "}
+            Or{" "}
+            <Link href={href} className="font-medium text-accent underline underline-offset-2 hover:text-accent-strong">
+              try an example
+            </Link>
+            . No account needed.{" "}
             <Link href="/sign-in?next=/my-comparisons" className="text-accent underline underline-offset-2 hover:text-accent-strong">
               Sign in
             </Link>{" "}
@@ -47,10 +45,9 @@ export default async function Home() {
         {a && b && (
           <Link
             href={href}
-            aria-label={`Example: ${a.name} versus ${b.name}. Open the full comparison.`}
             className="group block rounded-2xl border border-line bg-white p-5 shadow-sm transition hover:border-accent hover:shadow-md"
           >
-            <p className="text-xs font-medium uppercase tracking-widest text-muted">Example · both on a loan · {example.years} years</p>
+            <p className="text-xs font-medium uppercase tracking-widest text-muted">Example · both new, on a loan · {example.years} years</p>
             <div className="mt-4 grid grid-cols-2 gap-4">
               {[a, b].map((c) => (
                 <div key={c.name}>
@@ -63,7 +60,7 @@ export default async function Home() {
                     )}
                   </div>
                   <p className="mt-2 text-sm font-semibold leading-snug">{c.name}</p>
-                  <p className="mt-2 text-xs text-muted">Net cost after resale</p>
+                  <p className="mt-2 text-xs text-muted">Real cost over {example.years} years</p>
                   <p className="text-2xl font-bold tracking-tight">{money(c.netCost)}</p>
                   <p className="text-xs text-muted">{money(c.perMonth)} a month</p>
                   {c.isLowest && <span className="mt-2 inline-block rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-white">Lowest cost</span>}
@@ -103,8 +100,8 @@ export default async function Home() {
           <Step n={1} title="Pick up to four cars">
             Search (&ldquo;2024 civic hybrid&rdquo;) or choose year, make, model and version. Then pick loan, lease or cash.
           </Step>
-          <Step n={2} title="Tell us how you drive">
-            Kilometres, city or highway, how many winter months, whether you can charge at home, and how long you&rsquo;ll keep the car.
+          <Step n={2} title="Answer four quick questions">
+            How far you drive, when you drive, how long you&rsquo;ll keep the car and where you live. Skip any of them to use Alberta averages.
           </Step>
           <Step n={3} title="Compare like for like">
             A one-line answer, the net cost of each car after resale, cost per month and per km, and a year-by-year chart.

@@ -13,6 +13,7 @@ export interface ComparisonState {
   v: 1;
   shared: Partial<SharedInputs>; // only the shared inputs the user changed
   columns: ColumnState[];
+  answers?: { region?: string }; // questionnaire answers that are not calculation inputs (display only)
 }
 
 export const MAX_COLUMNS = 4;
@@ -28,7 +29,7 @@ export function decodeState(text: string | null | undefined): ComparisonState | 
   try {
     const s = JSON.parse(decompressFromEncodedURIComponent(text) ?? "");
     if (s && s.v === 1 && Array.isArray(s.columns)) {
-      return { v: 1, shared: s.shared ?? {}, columns: s.columns.slice(0, MAX_COLUMNS) };
+      return { v: 1, shared: s.shared ?? {}, columns: s.columns.slice(0, MAX_COLUMNS), ...(s.answers ? { answers: s.answers } : {}) };
     }
   } catch {
     // fall through

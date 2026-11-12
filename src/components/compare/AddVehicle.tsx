@@ -23,14 +23,16 @@ export function AddVehicle({
   onClose,
   onAdd,
   initialPayment = "loan",
+  initialQuery = "",
 }: {
+  initialQuery?: string; // typed on the home page
   open: boolean;
   onClose: () => void;
   onAdd: (vehicleId: string, payment: Payment) => void;
   initialPayment?: Payment;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(initialQuery);
   const [hits, setHits] = useState<Hit[]>([]);
   const [searching, setSearching] = useState(false);
   const [years, setYears] = useState<number[]>([]);

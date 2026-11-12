@@ -1,4 +1,4 @@
-// The home page example: a 2025 Toyota RAV4 Hybrid AWD and a 2025 Tesla Model Y Long Range, both on a loan,
+// The home page example: a new 2026 Toyota RAV4 AWD LE (hybrid) and a new 2026 Tesla Model Y Long Range AWD, both on a loan,
 // with the default driving settings. Results come from the normal calculation module; nothing is hard-coded.
 import "server-only";
 import { compressToEncodedURIComponent } from "lz-string";
@@ -8,7 +8,7 @@ import { findPhoto } from "./photos-server";
 import type { ComparisonState } from "./state";
 import { getVehicle } from "./vehicles-server";
 
-const EXAMPLE_IDS = ["D-Utv73ImU", "XcHLgQHwcR"]; // 2025 RAV4 Hybrid AWD, 2025 Model Y Long Range (src/data/vehicles.json)
+const EXAMPLE_IDS = ["VPhJpJKUYH", "emwQYe1Q3-"]; // 2026 RAV4 AWD LE (hybrid), 2026 Model Y Long Range AWD (src/data/vehicles.json)
 const CURRENT_YEAR = 2026;
 
 export function exampleHref(): string {

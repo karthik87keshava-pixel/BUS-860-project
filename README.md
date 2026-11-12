@@ -48,3 +48,10 @@ The two secret values (Supabase URL and anon key) live in Vercel → Project →
 ## Status
 
 See the end of `DECISIONS.md` for the current status and what's left for December.
+
+## Going back to the previous version
+
+The version presented in class on November 12, 2026 (before the questionnaire and usability round) is commit `ca2c871`.
+
+- **Fastest, no code:** in Vercel, open **Deployments**, find the deployment from before the change, click **⋯ → Instant Rollback** (or **Promote to Production**). The live site goes back in seconds and nothing is deleted.
+- **In the code:** ask Claude Code to "restore the site to commit ca2c871". It adds a new commit that undoes the later changes, so both versions stay in the history.

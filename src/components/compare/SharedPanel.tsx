@@ -1,6 +1,6 @@
 "use client";
-// "Your driving" panel: inputs shared by every column.
-import { useEffect, useState } from "react";
+// "Fine-tune the numbers" panel: every input shared by all columns. The questionnaire fills the main ones;
+// this panel, below the results, is for people who want exact values.
 import { SOURCES, kmPerYear, type SharedInputs, type Sourced } from "@/lib/calc";
 import { distance } from "@/lib/format";
 import { KM_PER_MI, useUnits } from "@/lib/units";
@@ -13,17 +13,16 @@ export function SharedPanel({
   changed,
   set,
   reset,
+  open,
+  setOpen,
 }: {
+  open: boolean;
+  setOpen: (o: boolean) => void;
   shared: SharedInputs;
   changed: Partial<SharedInputs>;
   set: <K extends Key>(k: K, v: SharedInputs[K]) => void;
   reset: (k: Key) => void;
 }) {
-  // Open on large screens, collapsed on phones (it is long)
-  const [open, setOpen] = useState(true);
-  useEffect(() => {
-    if (window.matchMedia("(max-width: 1023px)").matches) setOpen(false);
-  }, []);
   const { units } = useUnits();
   const km = kmPerYear(shared);
   const isChanged = (k: Key) => k in changed;
@@ -42,17 +41,17 @@ export function SharedPanel({
   );
 
   return (
-    <section aria-labelledby="your-driving" className="no-print border-b border-line bg-white">
+    <section id="fine-tune" aria-labelledby="your-driving" className="no-print mt-12 scroll-mt-4 border-y border-line bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <button
           type="button"
-          onClick={() => setOpen((o) => !o)}
+          onClick={() => setOpen(!open)}
           aria-expanded={open}
           className="flex w-full items-center justify-between gap-4 py-4 text-left"
         >
           <span>
             <span id="your-driving" className="text-lg font-semibold">
-              Your driving
+              Fine-tune the numbers
             </span>
             <span className="ml-3 text-sm text-muted">
               {distance(km, units)} a year · {Math.round(shared.cityShare * 100)}% city · {shared.years} years · {shared.winterMonths} winter months ·
